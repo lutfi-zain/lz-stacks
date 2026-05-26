@@ -1,5 +1,5 @@
 ---
-name: daily-reflect
+name: lz-daily-reflect
 description: Create a daily reflection entry documenting work done, key findings, decisions, artifacts, blockers, and next steps. Use at the end of a work session or when the user says /daily-reflect. Supports two modes: project (default) and global.
 ---
 
@@ -9,7 +9,7 @@ Create a daily reflection entry based on the work session that just finished or 
 
 ## Argument
 
-If there is an argument after `/skill:daily-reflect`, it determines the mode:
+If there is an argument after `/skill:lz-daily-reflect`, it determines the mode:
 
 - **`global`** — Save to `~/.pi/daily-reflection/` (cross-project)
 - **`project`** — (default) Save to `docs/daily-reflection/` in the current project

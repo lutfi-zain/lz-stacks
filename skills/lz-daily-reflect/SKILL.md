@@ -1,6 +1,6 @@
 ---
 name: lz-daily-reflect
-description: Create a daily reflection entry documenting work done, key findings, decisions, artifacts, blockers, and next steps. Use at the end of a work session or when the user says /daily-reflect. Supports two modes: project (default) and global.
+description: "Create a daily reflection entry documenting work done, key findings, decisions, artifacts, blockers, and next steps. Use at the end of a work session or when the user says /daily-reflect. Supports two modes: project (default) and global."
 ---
 
 # Daily Reflect

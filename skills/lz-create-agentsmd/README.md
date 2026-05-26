@@ -23,9 +23,9 @@ When an agent executes this skill, it follows a strict 3-phase workflow:
 
 ```mermaid
 graph TD
-    A[Phase 1: Deep Semantic Scan] -->|Extracts DDD & Gold Standards| B(Phase 2: Chained User Interview)
-    B -->|Agent asks questions to validate rules| C{User Validation}
-    C -->|Approved Constraints & Commands| D[Phase 3: Template Generation]
+    A[Phase 1: Deep Semantic Scan] --> B(Phase 2: Chained User Interview)
+    B --> C{User Validation}
+    C --> D[Phase 3: Template Generation]
     D --> E[AGENTS.md Created in Root]
 ```
 

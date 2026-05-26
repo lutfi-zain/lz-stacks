@@ -22,8 +22,8 @@
 
 | Skill | Description | Command |
 | :--- | :--- | :--- |
-| **lz-daily-reflect** | Smart daily work reflections with project context. | `/skill:lz-daily-reflect` |
-| **lz-create-agentsmd** | Interactive AGENTS.md generator for pi. | `/skill:lz-create-agentsmd` |
+| [**lz-daily-reflect**](./skills/lz-daily-reflect/SKILL.md) | Smart daily work reflections with project context. | `/skill:lz-daily-reflect` |
+| [**lz-create-agentsmd**](./skills/lz-create-agentsmd/SKILL.md) | Interactive AGENTS.md generator for pi. | `/skill:lz-create-agentsmd` |
 
 ---
 

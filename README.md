@@ -39,7 +39,9 @@ npx skills add lutfi-zain/lz-stacks
 
 ### 2. Specific Skill Installation
 ```bash
+npx skills add lutfi-zain/lz-stacks --skill lz-session-learn
 npx skills add lutfi-zain/lz-stacks --skill lz-daily-reflect
+npx skills add lutfi-zain/lz-stacks --skill lz-create-agentsmd
 ```
 
 ---

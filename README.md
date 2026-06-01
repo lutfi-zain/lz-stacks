@@ -22,6 +22,7 @@
 
 | Skill | Description | Command |
 | :--- | :--- | :--- |
+| [**lz-session-learn**](./skills/lz-session-learn/SKILL.md) | Reflective session memory — distills the current session into durable `CLAUDE.md` / `AGENTS.md` / `MEMORY.md` entries using a 5-phase Read–Write reflective loop. | `/skill:lz-session-learn` |
 | [**lz-daily-reflect**](./skills/lz-daily-reflect/SKILL.md) | Smart daily work reflections with project context. | `/skill:lz-daily-reflect` |
 | [**lz-create-agentsmd**](./skills/lz-create-agentsmd/SKILL.md) | Interactive AGENTS.md generator for pi. | `/skill:lz-create-agentsmd` |
 

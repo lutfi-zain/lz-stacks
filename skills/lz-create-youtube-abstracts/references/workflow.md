@@ -13,10 +13,12 @@ transcript = api.fetch(video_id, languages=['id', 'en'])
 ```
 
 **Install**: `pip install --break-system-packages youtube-transcript-api`
+Ensure `yt-dlp` is installed for fallback support.
 
 **Troubleshooting**:
 - "Private video" → user must make it unlisted or provide cookies
 - No Indonesian subs → fallback to English with `languages=['id', 'en']`
+- Manual subtitles disabled → script automatically falls back to `yt-dlp --write-auto-subs --sub-langs id,en --sub-format json3`
 
 ## Step 2: Merge & Remove Overlap
 
@@ -51,25 +53,3 @@ Target: **≥500 words** Bahasa Indonesia.
 - Don't start paragraphs with "Selain itu", "Lebih lanjut"
 - Don't end with generic positive conclusion ("relevan untuk masa depan")
 - Don't pad with filler — every sentence carries meaning
-
-## Step 5: Humanize
-
-Apply lz-humanizer skill rules. Key restrictions:
-
-### Banned Words
-bisa, boleh, hanya, sangat, benar-benar, sebenarnya, pasti, dasar, seharusnya, mungkin, mulai, penting, menarik, kuat, rumit, buka, temukan, ciptakan, bayangkan, manfaatkan, jelaskan, karenanya, selanjutnya, namun, kuasai, melompat, pertanyaan, lanskap
-
-### Forbidden Punctuation
-- Em dash (—) — replace with comma
-- Semicolon — replace with period
-- Asterisks
-
-### Style Targets
-- Short + long sentence rhythm
-- Active voice
-- `gak/nggak` not `tidak`
-- `lo` for second person (casual)
-- `beliau` for speaker respect
-- "itu" used ≤5x total (find alternatives)
-- No corporate speak (sinergi, optimalisasi, transformasi, dorong)
-- Read-aloud test: does it sound like someone talking?

@@ -1,0 +1,31 @@
+{
+  "name": "lz-humanizer-pro",
+  "version": "1.0.0",
+  "description": "Bilingual (EN+ID) AI text detection and humanization engine. Combines 35+ pattern detectors, 700+ vocabulary terms, statistical analysis, and a 5-layer rewriting framework.",
+  "main": "src/cli.js",
+  "bin": {
+    "lz-humanizer": "src/cli.js"
+  },
+  "scripts": {
+    "start": "node src/cli.js",
+    "test": "node --experimental-vm-modules tests/run.js",
+    "test:en": "node tests/run.js --lang en",
+    "test:id": "node tests/run.js --lang id",
+    "format": "prettier --write 'src/**/*.js' 'tests/**/*.js'",
+    "format:check": "prettier --check 'src/**/*.js' 'tests/**/*.js'"
+  },
+  "keywords": [
+    "ai-detection",
+    "humanizer",
+    "bahasa-indonesia",
+    "text-analysis",
+    "burstiness",
+    "stylometry",
+    "ai-writing"
+  ],
+  "author": "Lutfi Zain",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

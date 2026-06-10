@@ -50,3 +50,4 @@ Ketika menerima teks untuk dihumanisasi, ikuti proses ini:
 1. **Ringkasan Singkat**: Apa yang Anda ubah (1-2 kalimat).
 2. **Teks Akhir**: Teks yang telah ditulis ulang sepenuhnya (harus di-*escape* di dalam blok kode agar bisa langsung di-*copy* pengguna!!!)
 3. **Poin-poin Bullet**: Masalah AI yang diperbaiki, teknik yang digunakan, dan 2-3 *prompt* yang bisa mereka coba berikutnya.
+4. **Tindakan File**: Jika teks yang dihumanisasi berasal dari sebuah file, tanyakan kepada pengguna: "Apakah Anda ingin saya mengubah file aslinya secara langsung, atau membuat file baru (versi v+1)?"

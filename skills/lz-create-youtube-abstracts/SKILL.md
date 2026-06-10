@@ -5,7 +5,7 @@ description: Create academic abstract or summary from YouTube video transcript(s
 
 # lz-create-youtube-abstracts
 
-Extract transcript from YouTube videos, merge overlapping content, write structured abstract in Bahasa Indonesia (min 500 words), then humanize.
+Extract transcript from YouTube videos, merge overlapping content, write structured abstract in Bahasa Indonesia (min 500 words).
 
 ## When to Use
 
@@ -14,7 +14,7 @@ User mentions: abstract dari video YouTube, summary video, rangkuman YouTube, tr
 ## Workflow
 
 ```
-[1] Fetch transcripts ──> [2] Merge & dedup ──> [3] Compile content ──> [4] Write draft (≥500 kata) ──> [5] Humanize
+[1] Fetch transcripts ──> [2] Merge & dedup ──> [3] Compile content ──> [4] Write draft (≥500 kata)
 ```
 
 ## Quick Start
@@ -31,14 +31,6 @@ User mentions: abstract dari video YouTube, summary video, rangkuman YouTube, tr
    - Minimum 500 kata Bahasa Indonesia
    - Cover: opening context, main topics, key concepts, practical examples, speaker stories
    - Use narrative flow, not bullet-list structure
-
-5. **Humanize**: Apply [lz-humanizer](/home/lutfizain/.pi/agent/skills/lz-humanizer/SKILL.md) rules:
-   - No banned words: `bisa`, `mulai`, `hanya`, `sebenarnya`, `penting`, `menarik`, etc. See reference.
-   - No em dash, semicolon, asterisks
-   - Short sentences mixed with longer ones
-   - Casual tone: `gak`, `nggak`, `lo`, `kita`, `beliau`
-   - Active voice, no corporate jargon
-   - Reduce `itu`, `yang`, filler words
 
 ## Abstract Structure Template
 
@@ -59,5 +51,4 @@ Body paragraphs:
 ## References
 
 - **Detailed workflow**: See [references/workflow.md](references/workflow.md)
-- **Humanization rules**: See [lz-humanizer](/home/lutfizain/.pi/agent/skills/lz-humanizer/SKILL.md) skill
 - **Scripts**: Use `scripts/get_transcript.py` and `scripts/merge_transcripts.py`

@@ -45,13 +45,13 @@ npx skills add lutfi-zain/lz-stacks --skill lz-create-youtube-abstracts
 
 | Skill | Description | Command |
 | :--- | :--- | :--- |
-| [**lz-quant-researcher**](./skills/lz-quant-researcher/SKILL.md) | Elite quant research mindset & workflow — persona-driven radical skepticism, Derman's philosophy, walk-forward validation, factor decomposition, regime detection. Includes production Python patterns, automated validation rules, and executable code scanner. | `/skill:lz-quant-researcher` |
-| [**lz-data-science-core**](./skills/lz-data-science-core/SKILL.md) | Strategic data scientist mindset & CRISP-DM workflow — first-principles thinking, EDA patterns, experiment design (A/B testing, causal inference), stakeholder communication, and executable data quality auditor. | `/skill:lz-data-science-core` |
-| [**lz-humanizer-pro**](./skills/lz-humanizer-pro/SKILL.md) | Bilingual AI Text Humanizer (EN+ID) — detects AI writing patterns, scores text 0-100, humanizes with 5-layer framework. Includes CLI, 37 pattern detectors, 700+ vocabulary terms. | `/skill:lz-humanizer-pro` |
+| [**lz-quant-researcher**](./skills/lz-quant-researcher/README.md) | Elite quant research mindset & workflow — persona-driven radical skepticism, Derman's philosophy, walk-forward validation, factor decomposition, regime detection. Includes production Python patterns, automated validation rules, and executable code scanner. | `/skill:lz-quant-researcher` |
+| [**lz-data-science-core**](./skills/lz-data-science-core/README.md) | Strategic data scientist mindset & CRISP-DM workflow — first-principles thinking, EDA patterns, experiment design (A/B testing, causal inference), stakeholder communication, and executable data quality auditor. | `/skill:lz-data-science-core` |
+| [**lz-humanizer-pro**](./skills/lz-humanizer-pro/README.md) | Bilingual AI Text Humanizer (EN+ID) — detects AI writing patterns, scores text 0-100, humanizes with 5-layer framework. Includes CLI, 37 pattern detectors, 700+ vocabulary terms. | `/skill:lz-humanizer-pro` |
 | [**lz-humanizer**](./skills/lz-humanizer/SKILL.md) | AI Text Humanizer (ID) — converts AI-sounding text into natural, human-written prose while preserving facts and structures. | `/skill:lz-humanizer` |
-| [**lz-session-learn**](./skills/lz-session-learn/SKILL.md) | Reflective session memory — distills the current session into durable `CLAUDE.md` / `AGENTS.md` / `MEMORY.md` entries using a 5-phase Read–Write reflective loop. | `/skill:lz-session-learn` |
+| [**lz-session-learn**](./skills/lz-session-learn/README.md) | Reflective session memory — distills the current session into durable `CLAUDE.md` / `AGENTS.md` / `MEMORY.md` entries using a 5-phase Read–Write reflective loop. | `/skill:lz-session-learn` |
 | [**lz-daily-reflect**](./skills/lz-daily-reflect/SKILL.md) | Smart daily work reflections with project context. | `/skill:lz-daily-reflect` |
-| [**lz-create-agentsmd**](./skills/lz-create-agentsmd/SKILL.md) | Interactive AGENTS.md generator for pi. | `/skill:lz-create-agentsmd` |
+| [**lz-create-agentsmd**](./skills/lz-create-agentsmd/README.md) | Interactive AGENTS.md generator for pi. | `/skill:lz-create-agentsmd` |
 | [**lz-create-youtube-abstracts**](./skills/lz-create-youtube-abstracts/SKILL.md) | Create academic abstract/summary from YouTube video transcripts in Bahasa Indonesia. Includes auto-fetch, overlap merge, and humanization. | `/skill:lz-create-youtube-abstracts` |
 
 ---

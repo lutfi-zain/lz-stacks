@@ -1,6 +1,7 @@
 <div align="center">
 
 # ⚡ lz-stacks
+
 **Premium AI Agent Skills for the Open Ecosystem**
 
 [![Registry](https://img.shields.io/badge/skills.sh-indexed-blueviolet?style=for-the-badge&logo=vercel)](https://skills.sh)
@@ -31,6 +32,7 @@ npx skills add lutfi-zain/lz-stacks --skill lz-session-learn
 npx skills add lutfi-zain/lz-stacks --skill lz-daily-reflect
 npx skills add lutfi-zain/lz-stacks --skill lz-create-agentsmd
 npx skills add lutfi-zain/lz-stacks --skill lz-create-youtube-abstracts
+npx skills add lutfi-zain/lz-stacks --skill lz-technical-indicator-architect
 ```
 
 ---
@@ -45,6 +47,7 @@ npx skills add lutfi-zain/lz-stacks --skill lz-create-youtube-abstracts
 
 | Skill | Description | Command |
 | :--- | :--- | :--- |
+| [**lz-technical-indicator-architect**](./skills/lz-technical-indicator-architect/README.md) | Design technical indicators from 10 statistical families — smoothing, filtering, regression, spectral, fractal, GARCH, entropy, chaos, Bayesian, ML-hybrid. Pick principle, understand trade-offs, compose with sound foundation. | `/skill:lz-technical-indicator-architect` |
 | [**lz-quant-researcher**](./skills/lz-quant-researcher/README.md) | Elite quant research mindset & workflow — persona-driven radical skepticism, Derman's philosophy, walk-forward validation, factor decomposition, regime detection. Includes production Python patterns, automated validation rules, and executable code scanner. | `/skill:lz-quant-researcher` |
 | [**lz-data-science-core**](./skills/lz-data-science-core/README.md) | Strategic data scientist mindset & CRISP-DM workflow — first-principles thinking, EDA patterns, experiment design (A/B testing, causal inference), stakeholder communication, and executable data quality auditor. | `/skill:lz-data-science-core` |
 | [**lz-humanizer-pro**](./skills/lz-humanizer-pro/README.md) | Bilingual AI Text Humanizer (EN+ID) — detects AI writing patterns, scores text 0-100, humanizes with 5-layer framework. Includes CLI, 37 pattern detectors, 700+ vocabulary terms. | `/skill:lz-humanizer-pro` |
@@ -61,11 +64,13 @@ npx skills add lutfi-zain/lz-stacks --skill lz-create-youtube-abstracts
 Install globally or into your current project using `skills.sh`:
 
 ### 1. Global Installation
+
 ```bash
 npx skills add lutfi-zain/lz-stacks
 ```
 
 ### 2. Specific Skill Installation
+
 ```bash
 npx skills add lutfi-zain/lz-stacks --skill lz-quant-researcher
 npx skills add lutfi-zain/lz-stacks --skill lz-data-science-core
@@ -75,6 +80,7 @@ npx skills add lutfi-zain/lz-stacks --skill lz-session-learn
 npx skills add lutfi-zain/lz-stacks --skill lz-daily-reflect
 npx skills add lutfi-zain/lz-stacks --skill lz-create-agentsmd
 npx skills add lutfi-zain/lz-stacks --skill lz-create-youtube-abstracts
+npx skills add lutfi-zain/lz-stacks --skill lz-technical-indicator-architect
 ```
 
 ---
@@ -82,11 +88,13 @@ npx skills add lutfi-zain/lz-stacks --skill lz-create-youtube-abstracts
 ## 🛠 Usage in Agents
 
 ### Pi Agent
+
 ```bash
 /skill:lz-daily-reflect
 ```
 
 ### Claude Code
+
 ```bash
 /lz-daily-reflect
 ```

@@ -1,0 +1,945 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>10 Statistical Principles Behind Technical Indicators</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --font-display: "Instrument Serif", Georgia, serif;
+        --font-body: "DM Sans", system-ui, sans-serif;
+        --font-mono: "JetBrains Mono", SF Mono, Consolas, monospace;
+        --bg: #f8f6f3;
+        --surface: #ffffff;
+        --surface2: #f1ede8;
+        --border: rgba(0, 0, 0, 0.06);
+        --text: #1a1814;
+        --text-dim: #6b6560;
+        --accent: #1e3a5f;
+        --accent-dim: rgba(30, 58, 95, 0.06);
+        --gold: #b8860b;
+        --gold-dim: rgba(184, 134, 11, 0.08);
+        --green: #2d6a4f;
+        --green-dim: rgba(45, 106, 79, 0.08);
+        --red: #9b2226;
+        --red-dim: rgba(155, 34, 38, 0.06);
+        --amber: #bc6c25;
+        --amber-dim: rgba(188, 108, 37, 0.08);
+        --teal: #0e7490;
+        --teal-dim: rgba(14, 116, 144, 0.06);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #141210;
+          --surface: #1e1c18;
+          --surface2: #262420;
+          --border: rgba(255, 255, 255, 0.06);
+          --text: #e8e4de;
+          --text-dim: #9a948c;
+          --accent: #7dadd4;
+          --accent-dim: rgba(125, 173, 212, 0.08);
+          --gold: #d4a73a;
+          --gold-dim: rgba(212, 167, 58, 0.1);
+          --green: #52b788;
+          --green-dim: rgba(82, 183, 136, 0.08);
+          --red: #e76f51;
+          --red-dim: rgba(231, 111, 81, 0.08);
+          --amber: #dda15e;
+          --amber-dim: rgba(221, 161, 94, 0.08);
+          --teal: #22d3ee;
+          --teal-dim: rgba(34, 211, 238, 0.06);
+        }
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: var(--font-body);
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        min-height: 100vh;
+      }
+
+      .hero {
+        padding: 4rem 2rem 3rem;
+        text-align: center;
+        background: linear-gradient(
+          180deg,
+          var(--accent-dim) 0%,
+          transparent 100%
+        );
+        border-bottom: 1px solid var(--border);
+      }
+      .hero h1 {
+        font-family: var(--font-display);
+        font-size: clamp(2rem, 5vw, 3.2rem);
+        font-weight: 400;
+        color: var(--accent);
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+      }
+      .hero .subtitle {
+        font-size: 1.05rem;
+        color: var(--text-dim);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .hero .meta {
+        margin-top: 1rem;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--text-dim);
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+      }
+
+      .section-label {
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--gold);
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .section-label::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--gold);
+      }
+
+      h2 {
+        font-family: var(--font-display);
+        font-size: 1.8rem;
+        font-weight: 400;
+        margin-bottom: 1rem;
+        color: var(--text);
+      }
+
+      .kpi-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+        margin-bottom: 3rem;
+      }
+      .kpi {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.25rem;
+        text-align: center;
+        animation: fadeUp 0.5s ease both;
+      }
+      .kpi:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+      .kpi:nth-child(2) {
+        animation-delay: 0.15s;
+      }
+      .kpi:nth-child(3) {
+        animation-delay: 0.2s;
+      }
+      .kpi:nth-child(4) {
+        animation-delay: 0.25s;
+      }
+      .kpi .num {
+        font-family: var(--font-display);
+        font-size: 2.2rem;
+        color: var(--accent);
+        line-height: 1;
+      }
+      .kpi .label {
+        font-size: 0.8rem;
+        color: var(--text-dim);
+        margin-top: 0.35rem;
+      }
+
+      .taxonomy-grid {
+        display: grid;
+        gap: 1rem;
+        margin-bottom: 3rem;
+      }
+
+      .family-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.5rem;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 1.25rem;
+        align-items: start;
+        animation: fadeUp 0.5s ease both;
+        transition: border-color 0.2s;
+      }
+      .family-card:hover {
+        border-color: var(--gold);
+      }
+      .family-card .num {
+        font-family: var(--font-mono);
+        font-size: 0.65rem;
+        font-weight: 600;
+        color: var(--surface);
+        background: var(--accent);
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .family-card .body h3 {
+        font-family: var(--font-body);
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+      }
+      .family-card .body .principle {
+        font-size: 0.88rem;
+        color: var(--text-dim);
+        margin-bottom: 0.6rem;
+        line-height: 1.5;
+      }
+      .family-card .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+      }
+      .tag {
+        font-family: var(--font-mono);
+        font-size: 0.65rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        background: var(--accent-dim);
+        color: var(--accent);
+        white-space: nowrap;
+      }
+      .tag.gold {
+        background: var(--gold-dim);
+        color: var(--gold);
+      }
+      .tag.green {
+        background: var(--green-dim);
+        color: var(--green);
+      }
+      .tag.teal {
+        background: var(--teal-dim);
+        color: var(--teal);
+      }
+      .tag.amber {
+        background: var(--amber-dim);
+        color: var(--amber);
+      }
+      .tag.red {
+        background: var(--red-dim);
+        color: var(--red);
+      }
+
+      .family-card .era {
+        font-family: var(--font-mono);
+        font-size: 0.6rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-dim);
+        margin-top: 0.5rem;
+      }
+
+      .divider {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 2.5rem 0;
+      }
+
+      .comparison-section {
+        margin-bottom: 3rem;
+      }
+      .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+      }
+      thead th {
+        position: sticky;
+        top: 0;
+        background: var(--surface2);
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-dim);
+        padding: 0.75rem 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+        white-space: nowrap;
+      }
+      td {
+        padding: 0.65rem 1rem;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+      tr:nth-child(even) td {
+        background: var(--accent-dim);
+      }
+      td code {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        background: var(--surface2);
+        padding: 0.1rem 0.35rem;
+        border-radius: 3px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-family: var(--font-mono);
+        font-size: 0.65rem;
+        padding: 0.15rem 0.45rem;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+      .badge.good {
+        background: var(--green-dim);
+        color: var(--green);
+      }
+      .badge.mid {
+        background: var(--amber-dim);
+        color: var(--amber);
+      }
+      .badge.warn {
+        background: var(--red-dim);
+        color: var(--red);
+      }
+
+      .lineage {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 3rem;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        line-height: 2;
+        overflow-x: auto;
+      }
+      .lineage .arrow {
+        color: var(--gold);
+        font-weight: 600;
+      }
+      .lineage .highlight {
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      .framework-box {
+        background: var(--surface);
+        border: 2px solid var(--gold);
+        border-radius: 10px;
+        padding: 2rem;
+        margin-bottom: 3rem;
+      }
+      .framework-box h3 {
+        font-family: var(--font-display);
+        font-size: 1.4rem;
+        color: var(--gold);
+        margin-bottom: 1rem;
+      }
+      .layer {
+        margin-bottom: 1rem;
+        padding-left: 1rem;
+        border-left: 2px solid var(--border);
+      }
+      .layer-name {
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--accent);
+        margin-bottom: 0.3rem;
+      }
+      .layer-items {
+        font-size: 0.88rem;
+        color: var(--text-dim);
+      }
+      .layer-items code {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        background: var(--surface2);
+        padding: 0.1rem 0.35rem;
+        border-radius: 3px;
+      }
+
+      .contradictions {
+        background: var(--red-dim);
+        border: 1px solid var(--red);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 3rem;
+      }
+      .contradictions h3 {
+        font-family: var(--font-body);
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--red);
+        margin-bottom: 0.75rem;
+      }
+      .contradictions p {
+        font-size: 0.88rem;
+        color: var(--text);
+        margin-bottom: 0.5rem;
+        line-height: 1.55;
+      }
+      .contradictions .resolution {
+        font-size: 0.85rem;
+        color: var(--green);
+        font-weight: 500;
+        margin-top: 0.5rem;
+      }
+
+      footer {
+        text-align: center;
+        padding: 2rem;
+        font-size: 0.75rem;
+        color: var(--text-dim);
+        border-top: 1px solid var(--border);
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation: none !important;
+        }
+      }
+      @media (max-width: 640px) {
+        .hero {
+          padding: 2.5rem 1rem 2rem;
+        }
+        .hero h1 {
+          font-size: 1.6rem;
+        }
+        .container {
+          padding: 1.5rem 1rem;
+        }
+        .family-card {
+          grid-template-columns: 1fr;
+        }
+        .family-card .num {
+          width: auto;
+          height: auto;
+          padding: 0.2rem 0.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="hero">
+      <h1>10 Statistical Principles Behind Technical Indicators</h1>
+      <p class="subtitle">
+        Setiap indikator teknikal, dari SMA sederhana sampai HMM regime
+        detection, berakar pada salah satu dari 10 families statistik ini.
+      </p>
+      <p class="meta">
+        Research: 65 sources · 5 rounds · 88% confidence · June 2026
+      </p>
+    </header>
+
+    <main class="container">
+      <section>
+        <div class="kpi-row">
+          <div class="kpi">
+            <div class="num">10</div>
+            <div class="label">Families Statistik</div>
+          </div>
+          <div class="kpi">
+            <div class="num">3</div>
+            <div class="label">Classical (yang sudah dikenal)</div>
+          </div>
+          <div class="kpi">
+            <div class="num">7</div>
+            <div class="label">Extended (yang belum dikenal)</div>
+          </div>
+          <div class="kpi">
+            <div class="num">65</div>
+            <div class="label">Sumber Literatur</div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-label">Full Taxonomy</div>
+        <h2>10 Families Principals Statistik</h2>
+        <div class="taxonomy-grid">
+          <div class="family-card" style="animation-delay: 0.1s">
+            <div class="num">1</div>
+            <div class="body">
+              <h3>Smoothing / Moving Averaging</h3>
+              <p class="principle">
+                Convolution dengan berbagai weighting scheme. Trade-off
+                fundamental: smoothness vs lag. Dari uniform weights (SMA) ke
+                exponential (EMA) ke negative weights (DEMA/TEMA) ke nonlinear
+                adaptive (Hull, MAMA).
+              </p>
+              <div class="tags">
+                <span class="tag">SMA</span><span class="tag">EMA</span
+                ><span class="tag">WMA</span> <span class="tag gold">DEMA</span
+                ><span class="tag gold">TEMA</span>
+                <span class="tag green">Hull MA</span
+                ><span class="tag green">ALMA</span>
+                <span class="tag teal">KAMA</span
+                ><span class="tag teal">FRAMA</span
+                ><span class="tag teal">MAMA</span>
+              </div>
+              <p class="era">Classical · Sejak 1900-an</p>
+            </div>
+          </div>
+
+          <div class="family-card" style="animation-delay: 0.15s">
+            <div class="num">2</div>
+            <div class="body">
+              <h3>Digital Signal Filtering</h3>
+              <p class="principle">
+                Isolasi frequency band dari price signal. Low-pass = trend,
+                High-pass = momentum, Band-pass = cycle. IIR (recursive,
+                EMA-like) vs FIR (non-recursive, stable). Filter design:
+                Butterworth, Chebyshev, Bessel, Elliptic.
+              </p>
+              <div class="tags">
+                <span class="tag">Butterworth</span
+                ><span class="tag">Chebyshev</span>
+                <span class="tag gold">Ehlers Supersmoother</span>
+                <span class="tag green">Bandpass</span
+                ><span class="tag green">Highpass</span>
+                <span class="tag teal">Lowpass</span
+                ><span class="tag teal">Roofing Filter</span>
+              </div>
+              <p class="era">
+                Classical · DSP untuk Trading (Ehlers sejak 2001)
+              </p>
+            </div>
+          </div>
+
+          <div class="family-card" style="animation-delay: 0.2s">
+            <div class="num">3</div>
+            <div class="body">
+              <h3>Regression / Curve Fitting</h3>
+              <p class="principle">
+                Fit mathematical curve ke price data. Deviation dari curve =
+                signal. Linear → polynomial → robust (RANSAC) → regularized
+                (Ridge/LASSO/Elastic Net). Bisa auto-select fitur yang berguna.
+              </p>
+              <div class="tags">
+                <span class="tag">Linear Regression</span>
+                <span class="tag gold">Polynomial Regression</span>
+                <span class="tag green">RANSAC</span>
+                <span class="tag teal">Ridge</span
+                ><span class="tag teal">LASSO</span>
+                <span class="tag amber">Elastic Net</span
+                ><span class="tag amber">MCP</span>
+              </div>
+              <p class="era">
+                Classical · Auto-select indicators via penalized regression
+              </p>
+            </div>
+          </div>
+
+          <div class="family-card" style="animation-delay: 0.25s">
+            <div class="num">4</div>
+            <div class="body">
+              <h3>Spectral Analysis / Cycle Detection</h3>
+              <p class="principle">
+                Decompose price ke komponen frekuensi. FFT (butuh banyak data) →
+                MESA (bisa dari sedikit data) → Hilbert Transform (instantaneous
+                frequency) → Wavelet (time + frequency simultaneous) → EMD
+                (data-driven).
+              </p>
+              <div class="tags">
+                <span class="tag">FFT</span><span class="tag gold">MESA</span>
+                <span class="tag green">Hilbert Transform</span>
+                <span class="tag teal">Wavelet (CWT/DWT)</span>
+                <span class="tag amber">Empirical Mode Decomposition</span>
+                <span class="tag red">Autocorrelation Periodogram</span>
+              </div>
+              <p class="era">Frontier · Ehlers' DSP Framework</p>
+            </div>
+          </div>
+
+          <div class="family-card" style="animation-delay: 0.3s">
+            <div class="num">5</div>
+            <div class="body">
+              <h3>Fractal / Hurst Analysis</h3>
+              <p class="principle">
+                Measure long-term memory dan self-similarity. H=0.5 random,
+                H>0.5 trending (persistent), H<0.5 mean-reverting
+                (anti-persistent). Multifractal analysis captures varying
+                complexity across scales.
+              </p>
+              <div class="tags">
+                <span class="tag">Hurst Exponent</span>
+                <span class="tag gold">R/S Analysis</span>
+                <span class="tag green">DFA</span>
+                <span class="tag teal">Fractal Dimension</span>
+                <span class="tag amber">FRAMA</span>
+                <span class="tag red">Multifractal (MFDFA)</span>
+              </div>
+              <p class="era">Frontier · Hydrology → Finance crossover</p>
+            </div>
+          </div>
+
+          <div class="family-card" style="animation-delay: 0.35s">
+            <div class="num">6</div>
+            <div class="body">
+              <h3>Volatility Clustering (GARCH Family)</h3>
+              <p class="principle">
+                Volatility cluster: high vol → high vol, low vol → low vol.
+                Stylized fact #1 financial markets (Mandelbrot 1963).
+                GARCH(1,1): conditional variance = weighted avg of long-run var,
+                past var, past shock. EGARCH/GJR: capture leverage effect.
+              </p>
+              <div class="tags">
+                <span class="tag">ARCH</span
+                ><span class="tag gold">GARCH(1,1)</span>
+                <span class="tag green">EGARCH</span
+                ><span class="tag green">GJR-GARCH</span>
+                <span class="tag teal">IGARCH</span
+                ><span class="tag teal">FIGARCH</span>
+                <span class="tag amber">Component GARCH</span>
+              </div>
+              <p class="era">
+                Core Theory · Predict uncertainty, not direction
+              </p>
+            </div>
+          </div>
+
+          <div class="family-card" style="animation-delay: 0.4s">
+            <div class="num">7</div>
+            <div class="body">
+              <h3>Information Theory / Entropy</h3>
+              <p class="principle">
+                Measure uncertainty dan information content. Shannon Entropy
+                tinggi = chaotic, rendah = ordered. Approximate Entropy = market
+                efficiency indicator. KL Divergence detect regime changes.
+                Permutation Entropy = robust to noise.
+              </p>
+              <div class="tags">
+                <span class="tag">Shannon Entropy</span>
+                <span class="tag gold">Approximate Entropy (ApEn)</span>
+                <span class="tag green">Permutation Entropy</span>
+                <span class="tag teal">KL Divergence</span>
+                <span class="tag amber">Transfer Entropy</span>
+                <span class="tag red">Wavelet Entropy</span>
+              </div>
+              <p class="era">Modern · Shannon 1948 → Finance applications</p>
+            </div>
+          </div>
+
+          <div class="family-card" style="animation-delay: 0.45s">
+            <div class="num">8</div>
+            <div class="body">
+              <h3>Nonlinear Dynamics / Chaos Theory</h3>
+              <p class="principle">
+                Market mungkin apparent random tapi deterministic chaos —
+                sensitive to initial conditions, bounded dalam strange
+                attractor. Lyapunov Exponent > 0 = chaotic. Fractal Dimension =
+                complexity. Phase space reconstruction via Takens' theorem.
+              </p>
+              <div class="tags">
+                <span class="tag">Lyapunov Exponent</span>
+                <span class="tag gold">Correlation Dimension</span>
+                <span class="tag green">Phase Space Reconstruction</span>
+                <span class="tag teal">Strange Attractors</span>
+                <span class="tag amber">BDS Test</span>
+              </div>
+              <p class="era">
+                Controversial · Evidence mixed, intermittent chaos likely
+              </p>
+            </div>
+          </div>
+
+          <div class="family-card" style="animation-delay: 0.5s">
+            <div class="num">9</div>
+            <div class="body">
+              <h3>Bayesian Probabilistic</h3>
+              <p class="principle">
+                Model hidden states dari observables. HMM: probabilistic regime
+                classification (72% bull, 20% chop, 8% bear). Kalman: linear
+                Gaussian state estimation. Particle Filter: nonlinear,
+                non-Gaussian extension. Adaptive HMM: two-layer hierarchy.
+              </p>
+              <div class="tags">
+                <span class="tag">HMM</span
+                ><span class="tag gold">Kalman Filter</span>
+                <span class="tag green">Particle Filter</span>
+                <span class="tag teal">Statistical Jump Model</span>
+                <span class="tag amber">Adaptive Hierarchical HMM</span>
+              </div>
+              <p class="era">Modern · Regime detection frontier</p>
+            </div>
+          </div>
+
+          <div class="family-card" style="animation-delay: 0.55s">
+            <div class="num">10</div>
+            <div class="body">
+              <h3>Machine Learning Hybrids</h3>
+              <p class="principle">
+                Combine multiple principles via learned representations.
+                Autoencoder untuk denoising, CNN untuk spatial features, LSTM
+                untuk temporal patterns, Clustering untuk regime detection.
+                Model figure out which combination works.
+              </p>
+              <div class="tags">
+                <span class="tag">LSTM-CNN</span
+                ><span class="tag gold">Autoencoder + GAN</span>
+                <span class="tag green">K-means Clustering</span>
+                <span class="tag teal">XGBoost Ensemble</span>
+                <span class="tag amber">RL + HMM (PPO/SAC)</span>
+                <span class="tag red">Transformer-based</span>
+              </div>
+              <p class="era">Cutting Edge · 2020-an, rapidly evolving</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <hr class="divider" />
+
+      <section>
+        <div class="section-label">Lineage</div>
+        <h2>Evolusi Moving Average → Adaptive</h2>
+        <div class="lineage">
+          <span class="highlight">SMA</span>
+          <span class="arrow">→</span> uniform weights (convolution)<br />
+          <span class="arrow">&nbsp;&nbsp;└→</span>
+          <span class="highlight">WMA</span> linear weights (recent = lebih
+          berat)<br />
+          <span class="arrow">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└→</span>
+          <span class="highlight">EMA</span> exponential weights (recursive)<br />
+          <span class="arrow"
+            >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├→</span
+          >
+          <span class="highlight">DEMA</span> = 2×EMA − EMA(EMA)
+          <em style="color: var(--text-dim)">[subtract lag]</em><br />
+          <span class="arrow"
+            >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├→</span
+          >
+          <span class="highlight">TEMA</span> = 3×EMA − 3×EMA² + EMA³<br />
+          <span class="arrow"
+            >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└→</span
+          >
+          <span class="highlight">ZLEMA</span> = EMA(2×price − price[lag])<br />
+          <span class="arrow"
+            >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└→</span
+          >
+          <span class="highlight">Hull MA</span> = WMA(2×WMA(n/2) − WMA(n),
+          √n)<br />
+          <span class="arrow"
+            >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span
+          ><br />
+          <span class="arrow"
+            >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├→</span
+          >
+          <span class="highlight">KAMA</span> adaptive alpha via Efficiency
+          Ratio<br />
+          <span class="arrow"
+            >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├→</span
+          >
+          <span class="highlight">FRAMA</span> adaptive alpha via Hurst
+          exponent<br />
+          <span class="arrow"
+            >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└→</span
+          >
+          <span class="highlight">MAMA</span> adaptive alpha via Hilbert
+          Transform phase rate<br />
+          <span class="arrow"
+            >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└→</span
+          >
+          <em style="color: var(--text-dim)"
+            >fast attack, slow decay (sample-and-hold)</em
+          >
+        </div>
+      </section>
+
+      <hr class="divider" />
+
+      <section class="comparison-section">
+        <div class="section-label">Comparison</div>
+        <h2>DSP Filters vs Traditional MA vs Adaptive MA</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Criterion</th>
+                <th>Traditional MA (SMA/EMA)</th>
+                <th>DSP Filters (Butterworth/Ehlers)</th>
+                <th>Adaptive MAs (KAMA/MAMA)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Lag</td>
+                <td><span class="badge warn">High</span></td>
+                <td><span class="badge mid">Low-Medium</span></td>
+                <td><span class="badge good">Low</span></td>
+              </tr>
+              <tr>
+                <td>Smoothness</td>
+                <td><span class="badge good">Good</span></td>
+                <td><span class="badge good">Excellent</span></td>
+                <td><span class="badge good">Good</span></td>
+              </tr>
+              <tr>
+                <td>Noise Rejection</td>
+                <td><span class="badge mid">Moderate</span></td>
+                <td><span class="badge good">Excellent</span></td>
+                <td><span class="badge good">Moderate-Excellent</span></td>
+              </tr>
+              <tr>
+                <td>Adaptivity</td>
+                <td><span class="badge warn">None</span></td>
+                <td><span class="badge mid">Fixed params</span></td>
+                <td><span class="badge good">Self-adapting</span></td>
+              </tr>
+              <tr>
+                <td>Complexity</td>
+                <td><span class="badge good">Very Low</span></td>
+                <td><span class="badge warn">High</span></td>
+                <td><span class="badge mid">Medium</span></td>
+              </tr>
+              <tr>
+                <td>Backtest Reliability</td>
+                <td><span class="badge good">Well-established</span></td>
+                <td><span class="badge warn">Mixed</span></td>
+                <td><span class="badge good">Good</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <hr class="divider" />
+
+      <section>
+        <div class="section-label">Framework</div>
+        <h2>Proposed Skill Development Architecture</h2>
+        <div class="framework-box">
+          <h3>4-Layer Indicator Development Pipeline</h3>
+
+          <div class="layer">
+            <div class="layer-name">Layer 1 — Input Processing</div>
+            <div class="layer-items">
+              <code>Denoising</code> (Wavelet, Supersmoother, Kalman) ·
+              <code>Normalization</code> (Z-score, Min-Max, Rank) ·
+              <code>Feature Extraction</code> (OHLC → returns, log returns,
+              ranges)
+            </div>
+          </div>
+
+          <div class="layer">
+            <div class="layer-name">
+              Layer 2 — Core Principle Selection (pick 1-2 families)
+            </div>
+            <div class="layer-items">
+              <code>Smoothing</code> → <code>Filtering</code> →
+              <code>Regression</code> → <code>Spectral</code> →
+              <code>Fractal</code> → <code>GARCH</code> → <code>Entropy</code> →
+              <code>Chaos</code> → <code>Bayesian</code> →
+              <code>ML Hybrid</code>
+            </div>
+          </div>
+
+          <div class="layer">
+            <div class="layer-name">Layer 3 — Signal Generation</div>
+            <div class="layer-items">
+              <code>Threshold</code> (RSI > 70) · <code>Crossover</code> (fast ×
+              slow MA) · <code>Probability</code> (HMM > 80%) ·
+              <code>Divergence</code> (price vs indicator) ·
+              <code>Composite</code> (multi-family score)
+            </div>
+          </div>
+
+          <div class="layer">
+            <div class="layer-name">Layer 4 — Validation</div>
+            <div class="layer-items">
+              <code>Walk-forward</code> · <code>Out-of-sample</code> ·
+              <code>Monte Carlo</code> ·
+              <code>Regime-aware</code> (bull/bear/chop separately) ·
+              <code>Robustness</code> (parameter sensitivity)
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="contradictions">
+        <h3>Contradictions Resolved</h3>
+        <p>
+          <strong>DSP Cycle Approaches:</strong> Ehlers' BandPass shows strong
+          theory but mixed independent backtests. Short cycles (25-35 bar) →
+          negative Sharpe. Wide bandwidths (30-70 bar) → positive. Ehlers
+          himself says "backtesting does not work" — his tools are measurement,
+          not signals.
+        </p>
+        <p class="resolution">
+          → Resolution: DSP filters = adaptive parameter providers, not
+          standalone signal generators.
+        </p>
+        <p style="margin-top: 0.75rem">
+          <strong>HMM Regime Lag:</strong> HMM outperforms buy-and-hold but lags
+          regime switches. Statistical Jump Models (JM) beat HMM: 44% vs 141%
+          turnover, better Sharpe across S&P 500, DAX, Nikkei 225.
+        </p>
+        <p class="resolution">
+          → Resolution: Consider JM or Adaptive HMM. Never rely on regime
+          detection alone.
+        </p>
+      </section>
+
+      <footer>
+        Research report · 65 sources · 5 rounds · 88% confidence · Generated by
+        pi deep-research<br />
+        Full report:
+        <code
+          >research_statistical-principles-technical-indicators_20260619.md</code
+        >
+      </footer>
+    </main>
+  </body>
+</html>

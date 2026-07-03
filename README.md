@@ -24,6 +24,9 @@ npx skills add lutfi-zain/lz-stacks
 Or a single skill:
 
 ```bash
+npx skills add lutfi-zain/lz-stacks --skill lz-content-engine
+npx skills add lutfi-zain/lz-stacks --skill lz-youtube-engine
+npx skills add lutfi-zain/lz-stacks --skill lz-skill-forge
 npx skills add lutfi-zain/lz-stacks --skill lz-quant-researcher
 npx skills add lutfi-zain/lz-stacks --skill lz-data-science-core
 npx skills add lutfi-zain/lz-stacks --skill lz-humanizer-pro
@@ -48,6 +51,9 @@ npx skills add lutfi-zain/lz-stacks --skill lz-technical-indicator-architect
 
 | Skill | Description | Command |
 | :--- | :--- | :--- |
+| [**lz-content-engine**](./skills/lz-content-engine/README.md) | Unified content creation and design engine for social media — LinkedIn, Twitter/X, and Instagram. Built around the 30-day playbook, visual systems, and platform playbooks. | `/skill:lz-content-engine` |
+| [**lz-youtube-engine**](./skills/lz-youtube-engine/README.md) | Unified YouTube pipeline — ideation (search vs browse), packaging (pairing principle), outlines (retention structure), and long-to-short repurposing. | `/skill:lz-youtube-engine` |
+| [**lz-skill-forge**](./skills/lz-skill-forge/README.md) | Meta-utility to discover repeated workflows across conversations and package them into standard, trigger-optimized agent skills. | `/skill:lz-skill-forge` |
 | [**lz-pr-review**](./skills/lz-pr-review/README.md) | Six-phase PR review — business intent → requirements → code comprehension → best practices (PERFECT rubric) → clarifying Q&A gate → visual report with mermaid diagrams, severity classification, and quoted code suggestions. | `/lz-pr-review` |
 | [**lz-technical-indicator-architect**](./skills/lz-technical-indicator-architect/README.md) | Design technical indicators from 10 statistical families — smoothing, filtering, regression, spectral, fractal, GARCH, entropy, chaos, Bayesian, ML-hybrid. Pick principle, understand trade-offs, compose with sound foundation. | `/skill:lz-technical-indicator-architect` |
 | [**lz-quant-researcher**](./skills/lz-quant-researcher/README.md) | Elite quant research mindset & workflow — persona-driven radical skepticism, Derman's philosophy, walk-forward validation, factor decomposition, regime detection. Includes production Python patterns, automated validation rules, and executable code scanner. | `/skill:lz-quant-researcher` |
@@ -74,6 +80,9 @@ npx skills add lutfi-zain/lz-stacks
 ### 2. Specific Skill Installation
 
 ```bash
+npx skills add lutfi-zain/lz-stacks --skill lz-content-engine
+npx skills add lutfi-zain/lz-stacks --skill lz-youtube-engine
+npx skills add lutfi-zain/lz-stacks --skill lz-skill-forge
 npx skills add lutfi-zain/lz-stacks --skill lz-quant-researcher
 npx skills add lutfi-zain/lz-stacks --skill lz-data-science-core
 npx skills add lutfi-zain/lz-stacks --skill lz-humanizer-pro

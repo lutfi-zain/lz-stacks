@@ -335,12 +335,20 @@ If the user says "skip" or "proceed without answering", proceed with documented 
 
 ### Phase 6: Visual Report
 
-**Goal:** Present everything from Phases 1-5 in a concise, visual format.
+**Goal:** Present everything from Phases 1-5 in a concise, visual format using the provided template `assets/REVIEW_REPORT.md`.
 
-Generate an **artifact** (markdown file) with:
+**CRITICAL INSTRUCTION:** The generated report MUST NOT use placeholder text or mock data. You must explicitly write down the actual analysis results from Phases 1 to 4:
+1. **Business Context (Phases 1-2):** Write a clear, compact explanation of the business intent and a checklist of the actual requirements.
+2. **Change Architecture (Phase 3):** Draw a real, PR-specific Mermaid diagram showing the dependency graph or flow of the changed components and their relationships. Do NOT copy the example below literally; it must match the actual code changes.
+3. **Change Map (Phase 3):** Fill the table with the actual changed files, their layers, change types, and criticality.
+4. **PERFECT Scorecard (Phase 4):** Grade all 7 dimensions of the PERFECT rubric based on the actual code (use ✅ Good, ⚠️ Fair, or ❌ Poor, with specific technical notes).
+5. **Review Findings (Phase 5):** Detail all blocking, important, suggestion, nit, and question findings with quoted code blocks.
+6. **Decision Flow:** Draw the actual deployment readiness decision path for the PR using Mermaid.
+
+Generate the final **artifact** (markdown file) with this structure:
 
 1. **Business Context Summary** (Phase 1-2 condensed)
-2. **Change Architecture Diagram** (Mermaid):
+2. **Change Architecture Diagram** (PR-specific Mermaid):
    ```mermaid
    graph TD
      subgraph "Changed Components"
@@ -357,7 +365,7 @@ Generate an **artifact** (markdown file) with:
 
 3. **Requirements Traceability Matrix** (table linking REQ → Code → Test)
 
-4. **PERFECT Scorecard** (visual radar/table):
+4. **PERFECT Scorecard** (visual table populated with actual analysis):
    ```
    | Dimension     | Score | Notes |
    |--------------|-------|-------|
@@ -385,6 +393,7 @@ Generate an **artifact** (markdown file) with:
    ```
 
 7. **Open the artifact** using `google-chrome <artifact_path>`
+    * **Note:** As per rule_global, you must always open the generated markdown/HTML artifact file using Google Chrome.
 
 ---
 

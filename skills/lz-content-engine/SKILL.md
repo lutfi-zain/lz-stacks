@@ -54,9 +54,16 @@ content-engine/              ← lives in the user's project
 ├── STRATEGY.md              ← goal, pillars, series, KPIs
 ├── CALENDAR.md              ← pipeline with status tracking
 ├── DESIGN-SYSTEM.md         ← colors, type, composition, signature
+├── render.js                ← rendering script (Satori → PNG → PDF)
+├── components/              ← JSX component templates for visuals
+│   ├── carousel-slide.jsx
+│   └── social-cover.jsx
 ├── posts/                   ← generated content (versioned)
 │   └── YYYY-MM-DD-platform.md
-└── assets/                  ← visual briefs, generated images
+└── assets/
+    ├── fonts/               ← TTF/OTF brand fonts for Satori
+    ├── backgrounds/          ← diffusion-generated textures/photos
+    └── rendered/             ← output PNGs and PDFs
 ```
 
 Any agent entering the project reads these docs and is immediately productive. No re-explaining the brand.
@@ -92,6 +99,8 @@ Run this when `content-engine/` does not exist in the project.
    - Signature element (the repeating motif)
 3. Generate `content-engine/DESIGN-SYSTEM.md` using `./assets/design-system-template.md`
 4. For deep carousel design rules, load `./references/carousel-design-system.md`
+5. Initialize the render pipeline: copy `./assets/render-to-image.js` → `content-engine/render.js`, copy JSX templates → `content-engine/components/`, install dependencies per `./assets/render-setup.md`
+6. Download brand fonts (TTF) to `content-engine/assets/fonts/`
 
 ### Phase 3 — Plan (30-Day Calendar)
 
@@ -134,6 +143,7 @@ Run this when `content-engine/` already exists.
 | Repurpose to other platforms | Use the matrix | `./assets/repurposing-matrix.md` |
 | Draft a newsletter | Use newsletter template | `./assets/newsletter-template.md` |
 | Design a carousel | Follow the 3-rule system | `./references/carousel-design-system.md` |
+| Render visuals (carousel/cover) | Write JSX → Satori → PNG/PDF | `./references/code-to-visual-pipeline.md` |
 | Goal check | Filter idea through locked goal | Inline (see below) |
 
 ### Step 3 — Create
@@ -190,6 +200,7 @@ For deep platform specs, load: `./references/linkedin-playbook.md`, `./reference
 | `./references/instagram-playbook.md` | Instagram algorithm, carousels, Reels |
 | `./references/copywriting-psychology.md` | AIDA, PAS, BAB, hooks, cognitive biases |
 | `./references/design-specs.md` | Platform dimensions, color psychology, typography |
+| `./references/code-to-visual-pipeline.md` | Hybrid rendering: JSX/Satori for layout, diffusion for photos |
 
 ## Asset Index
 
@@ -208,6 +219,10 @@ For deep platform specs, load: `./references/linkedin-playbook.md`, `./reference
 | `./assets/visual-brief-template.md` | Visual brief for design execution |
 | `./assets/repurposing-matrix.md` | 1 idea → multi-platform matrix |
 | `./assets/hashtag-strategy.md` | Hashtag research per platform |
+| `./assets/render-setup.md` | Render pipeline setup instructions |
+| `./assets/carousel-slide.jsx` | Base carousel slide JSX component |
+| `./assets/social-cover.jsx` | Base social cover JSX component |
+| `./assets/render-to-image.js` | Rendering script (Satori → PNG → PDF) |
 
 ## Hard Rules
 
@@ -219,3 +234,4 @@ For deep platform specs, load: `./references/linkedin-playbook.md`, `./reference
 6. Design stays locked. Post 1 and Post 30 must look like the same brand.
 7. Series beat random topics. Every post belongs to a series.
 8. If `lz-humanizer-pro` is installed, run content through it before marking as Published.
+9. **Visual generation is code-first.** Use JSX → Satori → PNG for all text-heavy graphics (carousels, covers, stories). Use diffusion models only for photographic backgrounds or textures that get placed *into* the coded template. Never rely on diffusion for text rendering.

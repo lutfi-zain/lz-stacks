@@ -32,6 +32,7 @@ npx skills add lutfi-zain/lz-stacks --skill lz-session-learn
 npx skills add lutfi-zain/lz-stacks --skill lz-daily-reflect
 npx skills add lutfi-zain/lz-stacks --skill lz-create-agentsmd
 npx skills add lutfi-zain/lz-stacks --skill lz-create-youtube-abstracts
+npx skills add lutfi-zain/lz-stacks --skill lz-pr-review
 npx skills add lutfi-zain/lz-stacks --skill lz-technical-indicator-architect
 ```
 
@@ -47,6 +48,7 @@ npx skills add lutfi-zain/lz-stacks --skill lz-technical-indicator-architect
 
 | Skill | Description | Command |
 | :--- | :--- | :--- |
+| [**lz-pr-review**](./skills/lz-pr-review/README.md) | Six-phase PR review — business intent → requirements → code comprehension → best practices (PERFECT rubric) → clarifying Q&A gate → visual report with mermaid diagrams, severity classification, and quoted code suggestions. | `/lz-pr-review` |
 | [**lz-technical-indicator-architect**](./skills/lz-technical-indicator-architect/README.md) | Design technical indicators from 10 statistical families — smoothing, filtering, regression, spectral, fractal, GARCH, entropy, chaos, Bayesian, ML-hybrid. Pick principle, understand trade-offs, compose with sound foundation. | `/skill:lz-technical-indicator-architect` |
 | [**lz-quant-researcher**](./skills/lz-quant-researcher/README.md) | Elite quant research mindset & workflow — persona-driven radical skepticism, Derman's philosophy, walk-forward validation, factor decomposition, regime detection. Includes production Python patterns, automated validation rules, and executable code scanner. | `/skill:lz-quant-researcher` |
 | [**lz-data-science-core**](./skills/lz-data-science-core/README.md) | Strategic data scientist mindset & CRISP-DM workflow — first-principles thinking, EDA patterns, experiment design (A/B testing, causal inference), stakeholder communication, and executable data quality auditor. | `/skill:lz-data-science-core` |

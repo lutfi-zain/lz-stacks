@@ -200,7 +200,6 @@ For deep platform specs, load: `./references/linkedin-playbook.md`, `./reference
 | `./references/instagram-playbook.md` | Instagram algorithm, carousels, Reels |
 | `./references/copywriting-psychology.md` | AIDA, PAS, BAB, hooks, cognitive biases |
 | `./references/design-specs.md` | Platform dimensions, color psychology, typography |
-| `./references/code-to-visual-pipeline.md` | Hybrid rendering: JSX/Satori for layout, diffusion for photos |
 
 ## Asset Index
 
@@ -219,10 +218,6 @@ For deep platform specs, load: `./references/linkedin-playbook.md`, `./reference
 | `./assets/visual-brief-template.md` | Visual brief for design execution |
 | `./assets/repurposing-matrix.md` | 1 idea → multi-platform matrix |
 | `./assets/hashtag-strategy.md` | Hashtag research per platform |
-| `./assets/render-setup.md` | Render pipeline setup instructions |
-| `./assets/carousel-slide.jsx` | Base carousel slide JSX component |
-| `./assets/social-cover.jsx` | Base social cover JSX component |
-| `./assets/render-to-image.js` | Rendering script (Satori → PNG → PDF) |
 
 ## Hard Rules
 

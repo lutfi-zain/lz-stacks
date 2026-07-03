@@ -392,10 +392,14 @@ Generate an **artifact** (markdown file) with:
 
 1. **Always use severity emoji** (🔴🟠🟡🔵⚪) before findings
 2. **Always quote code** in fenced blocks with the language specified
-3. **Always include file paths** as clickable links when possible
+3. **Always include file paths as remote github.com links**: All file paths and code links MUST point to the code repository on `github.com` (using the correct branch or commit SHA and line number range, e.g., `https://github.com/{owner}/{repo}/blob/{headRefName}/{path}#L{startLine}-L{endLine}`). Do NOT use local `file://` scheme links or relative local paths (e.g. `[src/main.ts](file:///run/media/...` or `[src/main.ts](./src/main.ts)`).
 4. **Use tables** for structured comparisons
 5. **Use mermaid diagrams** for architecture and flow visualization
 6. **Keep the Phase 6 report under 500 lines** — push detailed analysis into references
+7. **Mermaid syntax safety**: To prevent Mermaid syntax errors:
+   - Always quote node labels containing spaces, parentheses, brackets, or other special characters. E.g., `id["Label (Extra Info)"]` instead of `id[Label (Extra Info)]`.
+   - Never use HTML tags in node labels.
+   - Do not use special characters or keywords like `(` `)` `[` `]` `"` `{` `}` `;` `-->` directly inside raw node names; always define them properly with node IDs and double-quoted strings.
 
 ## Hard Rules
 
@@ -407,6 +411,8 @@ Generate an **artifact** (markdown file) with:
 6. **Always check for secret/credential exposure** in every PR.
 7. **Always check for test coverage** — missing tests on new logic is ALWAYS flagged.
 8. **Respect the author.** Reviews are conversations, not lectures.
+9. **Never use local paths or file:// links in the final report.** Every link to code or files must resolve to the remote GitHub repository.
+10. **Validate all Mermaid syntax** before generating the report to ensure it has no invalid syntax or special characters that render as an error.
 
 ## Corrections
 

@@ -24,6 +24,7 @@ npx skills add lutfi-zain/lz-stacks
 Or a single skill:
 
 ```bash
+npx skills add lutfi-zain/lz-stacks --skill lz-linkedin-carousel
 npx skills add lutfi-zain/lz-stacks --skill lz-visual-forge
 npx skills add lutfi-zain/lz-stacks --skill lz-content-engine
 npx skills add lutfi-zain/lz-stacks --skill lz-youtube-engine
@@ -52,6 +53,7 @@ npx skills add lutfi-zain/lz-stacks --skill lz-technical-indicator-architect
 
 | Skill | Description | Command |
 | :--- | :--- | :--- |
+| [**lz-linkedin-carousel**](./skills/lz-linkedin-carousel/README.md) | High-engagement B2B LinkedIn PDF carousel copywriting and visual design system based on Notion, Stripe, and Elastic aesthetics. | `/skill:lz-linkedin-carousel` |
 | [**lz-visual-forge**](./skills/lz-visual-forge/README.md) | Programmatic visual content generator for social media graphics, carousels, covers, YouTube thumbnails, and pitch decks from React JSX code using Vercel Satori and Resvg. | `/skill:lz-visual-forge` |
 | [**lz-content-engine**](./skills/lz-content-engine/README.md) | Unified content creation and design engine for social media — LinkedIn, Twitter/X, and Instagram. Built around the 30-day playbook, visual systems, and platform playbooks. | `/skill:lz-content-engine` |
 | [**lz-youtube-engine**](./skills/lz-youtube-engine/README.md) | Unified YouTube pipeline — ideation (search vs browse), packaging (pairing principle), outlines (retention structure), and long-to-short repurposing. | `/skill:lz-youtube-engine` |
@@ -82,6 +84,7 @@ npx skills add lutfi-zain/lz-stacks
 ### 2. Specific Skill Installation
 
 ```bash
+npx skills add lutfi-zain/lz-stacks --skill lz-linkedin-carousel
 npx skills add lutfi-zain/lz-stacks --skill lz-content-engine
 npx skills add lutfi-zain/lz-stacks --skill lz-youtube-engine
 npx skills add lutfi-zain/lz-stacks --skill lz-skill-forge

@@ -2,20 +2,21 @@
 
 Picking the right destination is the most consequential decision in this skill. The wrong target means the learning either bloats a hot file (cost) or disappears into a cold file (no payoff). This reference is the decision tree.
 
-> Research basis: amux's 2026 "Context Engineering for AI Coding Agents" surfaces six context surfaces with different cost / enforcement / scope profiles. Anthropic's "Effective context engineering for AI agents" (2025) formalizes compaction, memory, and structured notes. We map learnings to surfaces by **cost × signal × scope**.
+> Research basis: amux's 2026 "Context Engineering for AI Coding Agents" surfaces six context surfaces with different cost / enforcement / scope profiles. Anthropic's "Effective context engineering for AI agents" (2025) formalizes compaction, memory, and structured notes. Behavioral Mode adds SkillX (arXiv 2604.04804) hierarchical skill storage patterns.
 
-## The Six Surfaces (Quick Map)
+## The Seven Surfaces (Six + Behavioral)
 
 | Surface | Loaded | Cost per turn | Scope | Best for |
 | --- | --- | --- | --- | --- |
-| `CLAUDE.md` (project root) | Every session | **High** (full read) | Project | Hard rules, project conventions |
-| `AGENTS.md` | First hit per agent (Claude fallback) | **High** (full read) | Cross-agent | Multi-tool standards (60K+ repos) |
-| `MEMORY.md` (auto-memory) | Every session | **High** for first 200 lines / 25KB | Per-project | Index + recent corrections |
-| Topic file (`MEMORY.md/.../foo.md`) | **On demand** | **Zero** until read | Per-project | Detailed notes, debugging recipes |
-| `.claude/rules/*.md` | On path-match | **Zero** until matched | Per-glob | Stack-specific (e.g., `*.ts`) |
-| Skill `SKILL.md` | On relevance match | **Zero** until activated | Cross-project | Reusable workflows |
+| `CLAUDE.md` (project root) | Every session | **High** (full read) | Project | Hard rules, project conventions, **macro behavioral rules** |
+| `AGENTS.md` | First hit per agent | **High** (full read) | Cross-agent | Multi-tool standards, **meso/micro behavioral patterns** |
+| `MEMORY.md` (auto-memory) | Every session | **High** for first 200 lines / 25KB | Per-project | Index + recent corrections, **recent behavioral patterns** |
+| Topic file (`MEMORY.md/.../foo.md`) | **On demand** | **Zero** until read | Per-project | Detailed behavioral recipes, retry-compression logs |
+| `.claude/rules/*.md` | On path-match | **Zero** until matched | Per-glob | Stack-specific behavior (e.g., `aws-*.md`) |
+| Skill `SKILL.md` | On relevance match | **Zero** until activated | Cross-project | Reusable behavioral workflows |
+| **`## Behavioral Patterns` section** | Same as parent file | Same as parent | Same as parent | **Agent behavioral optimizations** |
 
-**Default rule**: prefer the surface with the **lowest cost that still gets the rule read in the right contexts**. Topic files win on cost; project `CLAUDE.md` wins on enforcement.
+**Default rule**: prefer the surface with the **lowest cost that still gets the rule read in the right contexts**. For behavioral patterns, prefer `## Behavioral Patterns` in `AGENTS.md` (shared across agents) over `CLAUDE.md` (per-agent).
 
 ## Detection Order (First Hit Wins)
 
@@ -49,6 +50,8 @@ test -f "$HOME/.claude/projects/_$PROJ_ID/memory/MEMORY.md" \
 
 ## The Decision Tree Per Learning Item
 
+### Knowledge Mode
+
 Once you know *which file family* to target, decide *where in the file*:
 
 ```
@@ -69,9 +72,29 @@ Is the rule detailed and > 3 lines of evidence?
   └── NO → CLAUDE.md / AGENTS.md `## Learnings` (single row)
 ```
 
+### Behavioral Mode (NEW)
+
+```
+Is the behavioral rule a macro cross-session invariant?
+  ├── YES → CLAUDE.md `## Behavioral Patterns` (loaded every session)
+  └── NO ↓
+
+Is the behavioral rule a meso pattern (applies across related tasks)?
+  ├── YES → AGENTS.md `## Behavioral Patterns` (shared across agents)
+  └── NO ↓
+
+Is the behavioral rule a micro retry-compression (single scenario)?
+  ├── Is it detailed (> 3 lines)?
+  │   ├── YES → MEMORY.md topic file (e.g. behavioral-patterns.md)
+  │   └── NO → AGENTS.md `## Behavioral Patterns` (single row)
+  └──
+```
+
 ## Section Anchors (Reuse, Don't Invent)
 
 Always anchor on an existing section when one exists. Standard section names that should exist on a healthy target file:
+
+### Knowledge Mode
 
 | File | Anchor | When to use |
 | --- | --- | --- |
@@ -82,7 +105,16 @@ Always anchor on an existing section when one exists. Standard section names tha
 | `MEMORY.md` | (top of file, after `## Project Memory`) | Recent corrections |
 | `MEMORY.md` | `## [Topic]` followed by `[topic].md` link | Detailed notes |
 
-**Never** invent: `## AI Learnings`, `## Agent Notes`, `## Session Insights`, `## Things to Remember`. Use `## Learnings` and update existing conventions. New section names fragment context and defeat the point.
+### Behavioral Mode (NEW)
+
+| File | Anchor | When to use |
+| --- | --- | --- |
+| `CLAUDE.md` | `## Behavioral Patterns` | Macro behavioral invariants |
+| `AGENTS.md` | `## Behavioral Patterns` | Meso/micro behavioral patterns (shared across agents) |
+| `MEMORY.md` | `## Behavioral` section + `behavioral-patterns.md` link | Detailed behavioral recipes |
+| Topic file | `behavioral-patterns.md` | Retry-compression logs, tool-choice optimizations |
+
+**Never** invent: `## AI Learnings`, `## Agent Notes`, `## Session Insights`, `## Things to Remember`. Use `## Learnings` for knowledge, `## Behavioral Patterns` for behavior. New section names fragment context and defeat the point.
 
 ## Compaction & Restart Survival
 

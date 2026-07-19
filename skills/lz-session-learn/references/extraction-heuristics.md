@@ -2,9 +2,25 @@
 
 The session is noisy. This reference is the **signal taxonomy** the skill uses in Phase 1 (READ) to filter durable learnings from session chatter.
 
-> Research basis: SAMULE (EMNLP 2025) proposes three reflection levels — micro (single trajectory), meso (intra-task patterns), macro (cross-task invariants). We adopt that vocabulary.
+> Research basis: Two extraction modes. **Knowledge Mode** uses SAMULE (EMNLP 2025) three-level reflection — micro (single trajectory), meso (intra-task patterns), macro (cross-task invariants). **Behavioral Mode** uses SkillX (arXiv 2604.04804) trajectory compression and Letta Skill Learning (2025) reflection-creation pipeline.
 
-## Quick Decision Matrix
+---
+
+## Mode Selection
+
+Before extracting, determine the mode:
+
+1. If user passed `--knowledge` → Knowledge Mode
+2. If user passed `--behave` → Behavioral Mode
+3. If user passed `--all` → both (Knowledge first, then Behavioral)
+4. If no flag → auto-detect:
+   - Scan session for **tool-retry sequences** (same command 2+ times, different tools tried for same goal, error→fix→error→fix). If 2+ such sequences → **Behavioral Mode**
+   - Otherwise → **Knowledge Mode**
+   - If ambiguous → ask the user
+
+---
+
+## Knowledge Mode Quick Decision Matrix
 
 | Signal observed in session | Level | Worth persisting? | Default target |
 | --- | --- | --- | --- |
@@ -21,6 +37,75 @@ The session is noisy. This reference is the **signal taxonomy** the skill uses i
 | User pasted a long doc / spec | — | **NO** (link to it instead) | — |
 | User said "always do X before Y" | macro | **YES** | `CLAUDE.md` |
 | Agent guessed and the user accepted silently | — | **NO** | — |
+
+---
+
+## Behavioral Mode Signal Taxonomy (NEW)
+
+This taxonomy is for **Behavioral Mode** only. It extracts agent behavioral optimizations — not project facts.
+
+### Quick Decision Matrix
+
+| Signal observed in session | Level | Worth persisting? | Example row |
+| --- | --- | --- | --- |
+| Agent tried tool A (fail) → B (fail) → C (success) | micro-behavior | **YES** (high signal) | "When debugging ECS: skip A, B; start with C" |
+| Agent re-ran 3 similar commands before the right one | micro-behavior | **YES** | "When checking AWS: use `describe-services` not `list-tasks` first" |
+| User said "no" / "don't do that" mid-agent-action | micro-behavior | **YES** if the rejected approach was an agent habit | "Don't guess the path; use `find` first" |
+| Agent read the same file 2× unnecessarily | micro-behavior | Maybe | Cache file reads; re-reading wastes turns |
+| User said "you already did this before" | meso-behavior | **YES** | "For deployment: chain these 3 commands, don't ask each time" |
+| Agent used high-privilege tool when low-privilege works | micro-behavior | **YES** | "For reading config: use `cat`, not `sudo vim`" |
+| Same error occurred in 2 different debugging sessions | meso-behavior | **YES** | "When Kafka fails: check disk first, then consumer group" |
+| Agent solved problem P with approach 1, then again with approach 2 (better) | meso-behavior | **YES** | "For problem P: use approach 2 directly" |
+| User said "you keep starting from scratch" | macro-behavior | **YES** | "For recurring tasks: chain from last session, not from zero" |
+| Agent executed commands in suboptimal order | meso-behavior | **YES** | "Check prerequisites before attempting the main command" |
+| Agent succeeded on attempt N after N-1 failures | micro-behavior | **YES** | Compress N attempts → 1 optimal path |
+
+### The Retry Compression Pattern
+
+This is the **single most valuable behavioral extraction**. When you see:
+
+```
+attempt 1: tool X (fail: reason A)
+attempt 2: tool Y (fail: reason B)
+attempt 3: tool Z (success)
+```
+
+The behavioral learning is **not** "X fails with A, Y fails with B, Z works". That's a knowledge learning.
+
+The behavioral learning **is**:
+
+> "When [trigger scenario]: start with Z. Skip X and Y. Why: X fails with A, Y fails with B."
+
+### The Tool-Choice Anti-Pattern
+
+When the agent reaches for a complex/expensive/powerful tool when a simpler one suffices:
+
+| Anti-pattern | Better first choice |
+| --- | --- |
+| `execute-command --interactive` | `filter-log-events` (non-interactive) |
+| Full git clone | `git ls-remote` / `git archive` |
+| Build whole project | `tsc --noEmit` (type-check only) |
+| Run all tests | `pytest -xvs <specific file>` |
+| `aws ecs describe-tasks` first | `aws ecs list-services` first |
+
+### Behavioral Retention Filter
+
+For each candidate behavioral learning, score `S_b`:
+
+| Question | +1 if yes |
+| --- | --- |
+| Would a cold agent waste 2+ attempts without this? | +1 |
+| Is the behavioral rule verifiable (can it be tested?) | +1 |
+| Did the same retry pattern appear 2+ times this session? | +1 |
+| Is the behavioral rule stable (won't change next month)? | +1 |
+| Did the user explicitly say "you keep doing X"? | +2 |
+| Did the retry sequence save 3+ attempts? | +2 |
+
+**Decision thresholds:**
+
+- `S_b ≥ 4` → persist to `## Behavioral Patterns` in target file
+- `S_b = 2–3` → persist to topic file (e.g. `behavioral-patterns.md` in MEMORY.md topics)
+- `S_b ≤ 1` → discard
 
 ## Level 1 — MICRO: Single-Decision Signals
 
@@ -89,9 +174,9 @@ These are rules that should outlive the session, the project, and possibly the t
 - All API responses go through `src/lib/response.ts`. Don't hand-roll JSON shapes.
 ```
 
-## Ebbinghaus Retention Filter (Phase 2)
+## Knowledge Mode Retention Filter (Phase 2)
 
-For every candidate learning, score retention strength `S`:
+For every candidate learning in Knowledge Mode, score retention strength `S`:
 
 | Question | +1 if yes |
 | --- | --- |
@@ -103,7 +188,7 @@ For every candidate learning, score retention strength `S`:
 
 **Decision thresholds:**
 
-- `S ≥ 4` → persist to `CLAUDE.md` (high cost, high signal)
+- `S ≥ 4` → persist to `CLAUDE.md` or `AGENTS.md` (high cost, high signal)
 - `S = 2–3` → persist to a `MEMORY.md` topic file (low cost, medium signal)
 - `S = 1` → discard
 - `S = 0` → definitely discard (e.g., user said "thanks")
@@ -116,10 +201,13 @@ This is the same threshold-based memory-update rule MARS uses (Ebbinghaus curve,
 - **Tutorial-grade explanations** — the agent already knows how `pnpm` works.
 - **Speculative futures** — "we *might* migrate to turborepo" is noise until it ships.
 - **Personal preferences that aren't rules** — "I like dark mode" is not a learning.
-- **Things already in `CLAUDE.md`** — always grep first; update the date, don't duplicate.
+- **Things already in target file** — always grep first; update the date, don't duplicate.
 - **Secrets, tokens, internal URLs** — scrub before writing.
+- **Mixed-mode rows** — don't put behavioral rows in `## Learnings` or knowledge rows in `## Behavioral Patterns`. Each mode has its own section.
 
 ## Signal-Gathering Commands
+
+### Knowledge Mode
 
 ```bash
 # Changed files (last 5 commits)
@@ -131,11 +219,23 @@ git log --oneline -10
 # Recent file activity (top of ls is newest)
 ls -lt --time=mtime | head -20
 
-# Look for repeated commands in session (manual, but useful)
-# — review the Bash tool-call list for retries
-
-# Look for existing learnings to avoid duplicates
+# Look for existing Learnings to avoid duplicates
 grep -nE '^- \*\*[0-9]{4}-[0-9]{2}-[0-9]{2}\*\*' CLAUDE.md AGENTS.md 2>/dev/null
 ```
 
-The last command is the most important: it de-duplicates before you write.
+### Behavioral Mode (NEW)
+
+```bash
+# Look for repeated tool-use patterns in the session
+# Manual scan of tool-call list for retry sequences:
+#   same goal → tool A (fail) → tool B (fail) → tool C (success)
+
+# Check if similar behavioral patterns already exist
+grep -nE 'When [a-z]' AGENTS.md CLAUDE.md 2>/dev/null || true
+grep -n 'Behavioral Patterns' AGENTS.md CLAUDE.md 2>/dev/null || true
+
+# Count how many attempts before success for recent tasks
+# (manual: review Bash tool calls for repeated commands)
+```
+
+The de-duplication grep is the most important step for both modes.

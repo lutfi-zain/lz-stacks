@@ -90,6 +90,24 @@ The point of this table is not to shame the agent. It's to make the **excuses th
 - **Counter**: put the description in a topic file. The row in `## Learnings` should be a one-liner; the rationale lives in the topic file and is loaded on demand.
 - **Source**: progressive disclosure pattern in Agent Skills spec — keep the index lean, push detail to references/.
 
+### R15 — Behavioral Rationalization: "I'll just write the retry sequence as a Knowledge row."
+
+- **Cost of skipping**: writing "`execute-command` fails with TargetNotConnectedException" as a knowledge row tells the next agent "this error exists" but doesn't tell it what to *do first*. The behavioral version ("Skip execute-command, start with filter-log-events") actually changes agent conduct.
+- **Counter**: if the session shows the agent trying multiple approaches before succeeding, that's a behavioral pattern, not a project fact. Use `--behave` mode. The same raw signal produces very different (and more actionable) output.
+- **Source**: SkillX (arXiv 2604.04804) — trajectory compression strips trial-and-error and keeps only the optimal path.
+
+### R16 — Behavioral Rationalization: "The retry is the user's environment issue, not my behavior."
+
+- **Cost of skipping**: next session, the agent will repeat the same retry sequence because the environment hasn't changed. The error is deterministic; the agent's approach should adapt.
+- **Counter**: if error X is deterministic in environment Y, the agent should *start* with the solution, not rediscover it. Behavioral pattern captures exactly this: "In environment Y, skip A, do B first."
+- **Source**: Letta Skill Learning (2025) — agents using skills learned from feedback show 36.8% improvement.
+
+### R17 — Behavioral Rationalization: "The user didn't say 'remember this' — it's not a learning."
+
+- **Cost of skipping**: the user's frustration at "you keep doing this" is implicit feedback. They may not say "remember this" because they assume the agent should already know.
+- **Counter**: if a tool-choice pattern repeated 2+ times in a session, it's a behavioral signal even without an explicit "remember this". The retry-compression pattern is self-evident: N attempts → 1 optimal path.
+- **Source**: Self-Improving Agents survey (arXiv 2607.13104) — behavioral rules can be mined from trajectories alone, without explicit human marking.
+
 ## How to Use This File
 
 When you (the agent) are about to skip a step, find the matching `R#` and read the **Cost of skipping** line. If that cost is higher than the cost of doing the step, do the step.

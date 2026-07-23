@@ -111,6 +111,68 @@ For every config value referenced in code:
 - RDS: auto_minor_upgrade=false, maintenance Saturday
 ```
 
+### Rule 7: Never Label as "BUG" Without Architectural Context
+
+**Anti-pattern:** "is_um terbalik = BUG" → WRONG. You don't know the architectural decision.
+**Correct:** Frame as observation + needs confirmation.
+
+| Instead of | Say |
+|-----------|-----|
+| "BUG: X is reversed" | "Observation: X is set to Y. Verify with architecture team if this matches design intent." |
+| "This is wrong" | "This differs from expected pattern. Confirm with team that owns this service." |
+| "Missing feature" | "No implementation found for X in the scope checked. Confirm if this is by design." |
+
+**User had to correct:** *"tapi ini kan kamu gak bener-bener tau kalau seandainya itu tuh merupakan architectural decision kan?"*
+
+### Rule 8: Always Check Staging + Production Configs
+
+**Anti-pattern:** Only checking production Secrets Manager → INCOMPLETE.
+**Correct:** Compare staging AND production configs side-by-side.
+
+- Check staging secret values first (safer to read, easier to test)
+- Compare with production values
+- Note any differences and potential impact
+
+**User had to ask:** *"tolong cek juga secret manager di Kairos staging"*
+
+### Rule 9: Never Use Absolute Claims Without Exhaustive Search
+
+**Anti-pattern:** "refresh token tidak dipakai" / "gak ada getMeV6" → DANGEROUS.
+**Correct:** Use qualified language + document search scope.
+
+| Instead of | Say |
+|-----------|-----|
+| "X tidak ada" | "X tidak ditemukan dalam scope [Y]. Belum diverifikasi di [Z]." |
+| "X tidak dipakai" | "X tidak dipanggil dalam code path yang diperiksa. Perlu konfirmasi apakah ada caller lain." |
+| "Gak ada fungsi itu" | "Fungsi X tidak ditemukan di [lokasi spesifik]. Cek juga di [lokasi lain]." |
+
+**Why critical:** Incorrect absolute claims can impact management decisions and erode trust.
+
+### Rule 10: Verify Active Function/Middleware Version
+
+**Anti-pattern:** Assuming `getMeV4` is still used because it exists → WRONG.
+**Correct:** Trace from middleware/guard to actual function, verify it's the current active version.
+
+1. Find the middleware/guard that protects endpoints (e.g., `AccessTokenGuard.ts`)
+2. Trace which function it calls (`getMeV4` vs `getMeV6`)
+3. Verify no newer version exists in the same codebase
+4. Check git history for recent changes to this function
+
+**User asked:** *"dari tadi kamu nge-refer ke getmev4, bukannya kita pakai getmev6 ya?"*
+
+### Rule 11: RCA Reports Must Include GitHub Line Links
+
+**Anti-pattern:** Describing code without links → User can't verify.
+**Correct:** Every code reference in the report must include a clickable GitHub link.
+
+Format:
+
+```markdown
+- [`functionName()` — line X-Y](https://github.com/<org>/<repo>/blob/main/<path>#L{X}-L{Y})
+```
+
+**User had to ask:** *"tulis di report beserta link linecode ke GitHub"*
+
 ---
 
 ## Methodology (Adaptive RCA — Mandatory Sequential)
@@ -219,11 +281,29 @@ Generate Mermaid sequence diagrams and Gantt trace waterfalls from investigation
 
 Before presenting ANY findings to user, verify ALL boxes checked:
 
+### Data Collection
+
 - [ ] Minimum 10K log events extracted and aggregated
 - [ ] Unique users/endpoints/clients counted
+- [ ] Staging AND production configs compared
+
+### Code Verification
+
 - [ ] Every error traced to code location (file + line)
-- [ ] Every config value traced to Secrets Manager source
+- [ ] Every config value traced to Secrets Manager source + actual value read
 - [ ] Related code paths compared (not assumed identical)
+- [ ] Active function/middleware version verified (not assumed from existence)
+
+### Analysis Quality
+
 - [ ] Change Analysis completed (git, ECS, ECR, Secrets Manager, CloudTrail)
+- [ ] No absolute claims without qualified scope ("dalam scope X, belum ditemukan Y")
+- [ ] No "BUG" labels without architectural context confirmation
 - [ ] Statistics table built (per user, per endpoint, per client)
 - [ ] Timeline constructed with timestamps from all sources
+
+### Report Quality
+
+- [ ] Every code reference has GitHub line link
+- [ ] Executive summary is comprehensive (not just surface symptoms)
+- [ ] Language is factual and qualified (not assumptive)

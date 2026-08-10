@@ -40,21 +40,20 @@ If downstream integrations are found (e.g., Service A hits Service B and Service
 3. Wait for the user's response before proceeding.
 
 ### Phase 3: Deep Data Tracing (Iterative)
-1. For every approved downstream endpoint in the chain, trace its internal logic until the chain terminates (e.g., final DB insert or external 3rd party call).
+1. For every approved downstream endpoint in the chain, trace its internal logic until the chain terminates.
 2. **Never stop at the Controller level.** You MUST read and trace the data flow through:
-   - **DTOs / Validators**: What exact schema is expected?
-   - **Business Logic / Services**: What conditional rules apply?
-   - **Helpers / Utils**: How is data transformed (e.g., mapping, hashing, date parsing)?
+   - **Formulas & Logic**: What exact business rules, calculations, or math formulas are applied?
+   - **Asset Generation**: Does this endpoint create PDFs, Excel files, upload to S3, or send emails?
+   - **Upward Tracing (Consumers)**: For components, search the codebase to find exactly **where and when it is imported/used**.
    - **Repositories / ORM**: What specific database calls are made?
 
 ### Phase 4: Documentation Generation
 Select the correct template and adapt it based on the `--type`:
-- **Architecture**: Focus on C4 context, high-level microservices/system interaction, and domain boundaries.
-- **Component**: Focus on Frontend (React/Angular/Astro) component trees, state management, props, and API calls.
-- **Endpoint**: 
-  - If `--depth=quick`: Provide a high-level summary of the FULL chain (e.g., FE -> Payment -> Insert DB -> Inventory -> Insert DB). Do not dump code snippets, just explain the end-to-end journey and draw the full sequence diagram.
+- **Architecture**: Focus on C4 context, domain boundaries, and the specific **Business Triggers** (when and why this system is used).
+- **Component**: Focus on Frontend component trees, state management, **Consumers (where it is used)**, props, and API calls.
+- **Endpoint**: Focus on deep trace, **exact formulas**, **documents/assets created**, downstream integrations, and database mutations.
+- **Event**: Focus on producers, message brokers, topics, consumers, payload schemas, and idempotency handling.
   - If `--depth=detailed`: Document the deep internals of EVERY service in the chain. Group the documentation by service (e.g., Section 2: Payment Service Internals, Section 3: Inventory Service Internals).
-- **Event**: Focus on producers, message brokers, topics, consumers, and idempotency handling.
 
 ### Phase 5: Visual Aids (Mermaid)
 Apply the rules in `./references/mermaid-best-practices.md` to generate syntax-safe diagrams:

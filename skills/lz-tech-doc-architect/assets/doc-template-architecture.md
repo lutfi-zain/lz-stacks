@@ -6,7 +6,15 @@
 
 ---
 
-## 1. System Context (C4 Level 1)
+## 1. Business Context & Triggers
+*When and why is this system architecture utilized?*
+
+- **Core Problem Solved**: `[e.g., Processes high-throughput streaming data for fraud detection]`
+- **Primary Triggers**: `[e.g., Triggered every time a user swipes a credit card]`
+
+---
+
+## 2. System Context (C4 Level 1)
 
 *High-level view of users, our system boundary, and external systems.*
 

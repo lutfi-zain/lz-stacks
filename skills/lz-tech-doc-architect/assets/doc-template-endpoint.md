@@ -52,11 +52,12 @@ sequenceDiagram
 ## 3. Deep Dive: [Primary Service Name] Internals
 > **Note**: Sections below are populated extensively when `--depth=detailed` is used.
 
-### A. Business Logic & Transformations
+### A. Business Logic, Formulas & Assets
 - **File Reference**: `[GitHub Link to service file]`
 - **Step-by-Step Logic**:
-  1. `[e.g., Calculates total amount from line items]`
-  2. `[e.g., Transforms input array to DB models]`
+  1. `[e.g., Validates token]`
+- **Formulas & Calculations**: `[e.g., total = base_price * (1 - discount_rate) + tax]`
+- **Generated Assets/Documents**: `[e.g., Generates PDF invoice and uploads to S3 bucket 'invoices-prod']`
 - **Data Transformations**: `[e.g., Date strings are cast to UTC Timestamps]`
 
 ### B. Repository Operations

@@ -29,7 +29,17 @@ graph TD
 
 ---
 
-## 2. Technical Implementation Details
+## 2. Consumers & Usages (Upward Trace)
+*Where and when this component is used in the codebase.*
+
+- **Parent/Consumers**: 
+  - `[ParentComponentA]`: Renders this component during `[Condition/Route]`.
+  - `[ParentComponentB]`: Uses this component for `[Specific Feature]`.
+- **Trigger/Interaction Context**: `[When does the user interact with this? e.g., Only after checkout]`
+
+---
+
+## 3. Technical Implementation Details
 
 ### A. State Management
 - **Local State (`useState`, etc.)**: 

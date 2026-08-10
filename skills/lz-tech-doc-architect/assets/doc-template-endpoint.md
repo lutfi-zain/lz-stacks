@@ -46,13 +46,13 @@ sequenceDiagram
 > **Note**: This section MUST be repeated for EVERY single service in the chain. Do NOT summarize multiple services into one block.
 
 ### A. Internal Logic & Conditions (Flowchart)
-*You MUST draw a flowchart for this specific service's internal business logic, strictly capturing `if/else` conditions and validations.*
+*You MUST draw a flowchart for this specific service's internal business logic, strictly capturing `if/else` conditions and validations. **CRITICAL:** Decision nodes `{}` MUST contain the exact variable comparisons (e.g. `status == "PENDING"`), not generic questions.*
 
 ```mermaid
 flowchart TD
-    Start([Receive Request]) --> Validate{Is Payload Valid?}
+    Start([Receive Request]) --> Validate{"payload.id != null?"}
     Validate -- No --> Return400[Return 400 Bad Request]
-    Validate -- Yes --> CheckCondition{Is [Condition] Met?}
+    Validate -- Yes --> CheckCondition{"user.balance >= invoice.total?"}
     
     CheckCondition -- True --> ExecTrue[Execute True Logic]
     ExecTrue --> CallHelper[Call Helper: TransformData]

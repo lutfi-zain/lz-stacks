@@ -52,7 +52,7 @@ Select the correct template and adapt it based on the `--type`:
 - **Architecture**: Focus on C4 context, domain boundaries, and the specific **Business Triggers** (when and why this system is used).
 - **Component**: Focus on Frontend component trees, state management, **Consumers (where it is used)**, props, and API calls.
 - **Endpoint**: Focus on deep trace, **exact formulas**, **documents/assets created**, downstream integrations, and database mutations.
-  - If `--depth=detailed`: Document the deep internals of EVERY service in the chain. You MUST create a dedicated section for each service. Inside EACH service's section, you MUST draw a `flowchart TD` that explicitly maps the internal `if/else` business conditions for that specific service. Never skip a service's diagram.
+  - If `--depth=detailed`: Document the deep internals of EVERY service in the chain. You MUST create a dedicated section for each service. Inside EACH service's section, you MUST draw a `flowchart TD` that explicitly maps the internal `if/else` business conditions. **CRITICAL**: For decision nodes, do NOT use generic text like `Check Payer?`. You MUST write the exact code-level logic, e.g., `{payer.IsActive == true && amount > 0}`.
 - **Event**: Focus on producers, message brokers, topics, consumers, payload schemas, and idempotency handling.
 
 ### Phase 5: Visual Aids (Mermaid)

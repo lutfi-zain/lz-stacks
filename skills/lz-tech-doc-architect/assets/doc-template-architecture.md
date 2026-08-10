@@ -56,17 +56,17 @@ graph TD
     Kafka((Event Bus - Kafka))
 
     %% Connections
-    WebApp -->|"HTTPS/JSON"| API
-    MobileApp -->|"HTTPS/JSON"| API
+    WebApp -->|"POST /login"| API
+    MobileApp -->|"GET /profile"| API
     
-    API -->|"gRPC/HTTPS"| MicroA
-    API -->|"gRPC/HTTPS"| MicroB
+    API -->|"gRPC: user.auth"| MicroA
+    API -->|"GET /internal/v2/products"| MicroB
     
-    MicroA -->|"TCP"| DB_A
-    MicroB -->|"TCP"| DB_B
+    MicroA -->|"TCP (Query)"| DB_A
+    MicroB -->|"TCP (Query)"| DB_B
     
-    MicroA -.->|"Publishes Event"| Kafka
-    Kafka -.->|"Consumes Event"| MicroB
+    MicroA -.->|"Event: user_created"| Kafka
+    Kafka -.->|"Consume: user_created"| MicroB
 ```
 
 ---

@@ -57,9 +57,11 @@ Select the correct template and adapt it based on the `--type`:
 
 ### Phase 5: Visual Aids (Mermaid)
 Apply the rules in `./references/mermaid-best-practices.md` to generate syntax-safe diagrams:
-- `graph TD` for C4 Context and Component Trees.
-- `sequenceDiagram` for Request/Event Lifecycles (must include internal service layers and cross-service HTTP calls).
-- `erDiagram` for Database schemas.
+1. Wrap string labels with special characters in quotes.
+2. Ensure strict `TD` vs `LR` orientation.
+3. **CRITICAL**: For any cross-service connections in `graph TD`, the edge label MUST be the exact HTTP Method and URL (e.g., `"POST /api/v1/cancel"`). DO NOT use generic text like "HTTP POST" if multiple different endpoints are hit on the same service.
+4. Inject diagrams directly into the Markdown under their respective sections.
+
 
 ## Critical Rules
 

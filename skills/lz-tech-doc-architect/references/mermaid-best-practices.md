@@ -14,11 +14,14 @@ AI-generated Mermaid code often fails to render due to syntax errors. Strictly a
 
 ## 2. Diagram Specific Best Practices
 
-### A. System Architecture (C4 Context Diagram) `graph TD`
+### A. System Architecture (C4 Context & Container) `graph TD`
 **Purpose**: Map high-level systems interacting with a feature or endpoint.
 **Rules**:
 - Distinguish internal vs external systems (use subgraph for internal domain).
-- Do NOT include function names or variables here. Keep it high-level.
+- **Edge Labels (CRITICAL)**: When tracing HTTP/API calls between services, you **MUST** label the edge with the exact `[METHOD] [URL PATH]`. Do NOT use generic labels like "HTTP Request" or "Signature Header".
+  - ❌ `ServiceA -- "HTTP POST" --> ServiceB`
+  - ✅ `ServiceA -- "POST /api/v1/wrapper" --> ServiceB`
+- Do NOT include function names or variables here. Keep it high-level but precise on network boundaries.
 
 ### B. Component Design (Component Tree) `graph TD`
 **Purpose**: Map Frontend frameworks (React, Angular, Astro) DOM/Component hierarchy.

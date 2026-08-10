@@ -33,7 +33,7 @@ graph TD
 
 ---
 
-## 2. Container Architecture (C4 Level 2)
+## 3. Container Architecture (C4 Level 2)
 
 *Major deployable units, tech stacks, and network communications.*
 
@@ -71,7 +71,7 @@ graph TD
 
 ---
 
-## 3. Technology Stack & Data Contracts
+## 4. Technology Stack & Data Contracts
 
 ### A. Tech Stack
 | Component | Technology | Responsibility |
@@ -86,7 +86,7 @@ graph TD
 
 ---
 
-## 4. Architecture Decision Records (ADRs)
+## 5. Architecture Decision Records (ADRs)
 
 *For `--depth=detailed`: Document key engineering decisions.*
 

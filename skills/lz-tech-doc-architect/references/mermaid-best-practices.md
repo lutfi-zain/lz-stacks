@@ -21,6 +21,8 @@ AI-generated Mermaid code often fails to render due to syntax errors. Strictly a
 - **Edge Labels (CRITICAL)**: When tracing HTTP/API calls between services, you **MUST** label the edge with the exact `[METHOD] [URL PATH]`. Do NOT use generic labels like "HTTP Request" or "Signature Header".
   - ❌ `ServiceA -- "HTTP POST" --> ServiceB`
   - ✅ `ServiceA -- "POST /api/v1/wrapper" --> ServiceB`
+- **Causality in Graph TD**: If multiple upstream services call a middleman service (e.g., A->B and C->B), and the middleman calls a downstream service (B->D), you MUST clarify *which* upstream request triggers the downstream call using edge labels.
+  - ✅ `Middleman -- "[If triggered by Service A] POST /api/v1/downstream" --> ServiceD`
 - Do NOT include function names or variables here. Keep it high-level but precise on network boundaries.
 
 ### B. Component Design (Component Tree) `graph TD`

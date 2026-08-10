@@ -17,55 +17,68 @@
 
 ## 2. End-to-End Execution Flow (Sequence)
 
-*Detailed chronological flow mapping cross-service integrations and internal layers.*
+*Detailed chronological flow mapping cross-service integrations.*
 
 ```mermaid
 sequenceDiagram
     actor C as Client
     box Primary Service: Payment
     participant Svc1 as Payment Logic
-    participant Repo1 as Payment DB
     end
     
     box Downstream: Inventory
     participant Svc2 as Inventory Logic
-    participant Repo2 as Inventory DB
     end
 
     C->>Svc1: POST /invoice
     Svc1->>Svc1: Validate & Transform
-    Svc1->>Repo1: Insert Invoice
-    Repo1-->>Svc1: Success
     
     %% Cross-service integration
     Svc1->>Svc2: POST /inventory/reserve
-    Svc2->>Svc2: Check Stock Limits
-    Svc2->>Repo2: Update Stock
-    Repo2-->>Svc2: Success
-    Svc2-->>Svc1: 200 OK (Stock Reserved)
+    Svc2-->>Svc1: 200 OK
     
-    Svc1-->>C: 200 OK (Invoice Created)
+    Svc1-->>C: 200 OK
 ```
 
 ---
 
 ## 3. Deep Dive: [Primary Service Name] Internals
-> **Note**: Sections below are populated extensively when `--depth=detailed` is used.
+> **Note**: This section MUST be repeated for EVERY single service in the chain. Do NOT summarize multiple services into one block.
 
-### A. Business Logic, Formulas & Assets
+### A. Internal Logic & Conditions (Flowchart)
+*You MUST draw a flowchart for this specific service's internal business logic, strictly capturing `if/else` conditions and validations.*
+
+```mermaid
+flowchart TD
+    Start([Receive Request]) --> Validate{Is Payload Valid?}
+    Validate -- No --> Return400[Return 400 Bad Request]
+    Validate -- Yes --> CheckCondition{Is [Condition] Met?}
+    
+    CheckCondition -- True --> ExecTrue[Execute True Logic]
+    ExecTrue --> CallHelper[Call Helper: TransformData]
+    CallHelper --> InsertDB[Insert into TABLE_NAME]
+    
+    CheckCondition -- False --> ExecFalse[Execute False Logic]
+    ExecFalse --> UpdateDB[Update TABLE_NAME]
+    
+    InsertDB --> CallExt[Call Downstream API]
+    UpdateDB --> CallExt
+```
+
+### B. Business Logic, Formulas & Assets
 - **File Reference**: `[GitHub Link to service file]`
 - **Step-by-Step Logic**:
-  1. `[e.g., Validates token]`
+  1. `[Explain what happens at each step in the flowchart above]`
 - **Formulas & Calculations**: `[e.g., total = base_price * (1 - discount_rate) + tax]`
 - **Generated Assets/Documents**: `[e.g., Generates PDF invoice and uploads to S3 bucket 'invoices-prod']`
 - **Data Transformations**: `[e.g., Date strings are cast to UTC Timestamps]`
 
-### B. Repository Operations
+### C. Repository Operations
 - **File Reference**: `[GitHub Link to repository file]`
 - **Key Queries**:
   - `[e.g., INSERT INTO invoices...]`
 
-### C. Downstream Calls Made
+### D. Downstream Calls Made
 - **Target Endpoint**: `[METHOD] [PATH]` on `[Service Name]`
 - **Payload Sent**: 
 ```json
@@ -75,13 +88,20 @@ sequenceDiagram
 ---
 
 ## 4. Deep Dive: [Downstream Service Name 1] Internals
-*(Repeat this section for EVERY downstream service traced)*
+*(You MUST repeat the exact structure of Section 3 here, including the Internal Logic Flowchart capturing its specific `if/else` conditions!)*
 
-### A. Business Logic & Transformations
+### A. Internal Logic & Conditions (Flowchart)
+```mermaid
+flowchart TD
+    Start([Receive Request]) --> Logic[Execute Logic]
+```
+*(Expand this diagram for this specific service)*
+
+### B. Business Logic, Formulas & Assets
 - **File Reference**: `[GitHub Link to downstream service]`
 - **Step-by-Step Logic**: `[Explain logic executed in this service]`
 
-### B. Repository Operations
+### C. Repository Operations
 - **Key Queries**: `[e.g., UPDATE stock...]`
 
 ---
@@ -95,11 +115,5 @@ erDiagram
     INVOICES {
         uuid id
         decimal amount
-    }
-    
-    %% Downstream DB
-    STOCK_RESERVATIONS {
-        uuid item_id
-        int reserved_qty
     }
 ```

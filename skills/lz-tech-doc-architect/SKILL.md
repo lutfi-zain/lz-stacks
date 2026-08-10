@@ -52,8 +52,8 @@ Select the correct template and adapt it based on the `--type`:
 - **Architecture**: Focus on C4 context, domain boundaries, and the specific **Business Triggers** (when and why this system is used).
 - **Component**: Focus on Frontend component trees, state management, **Consumers (where it is used)**, props, and API calls.
 - **Endpoint**: Focus on deep trace, **exact formulas**, **documents/assets created**, downstream integrations, and database mutations.
+  - If `--depth=detailed`: Document the deep internals of EVERY service in the chain. You MUST create a dedicated section for each service. Inside EACH service's section, you MUST draw a `flowchart TD` that explicitly maps the internal `if/else` business conditions for that specific service. Never skip a service's diagram.
 - **Event**: Focus on producers, message brokers, topics, consumers, payload schemas, and idempotency handling.
-  - If `--depth=detailed`: Document the deep internals of EVERY service in the chain. Group the documentation by service (e.g., Section 2: Payment Service Internals, Section 3: Inventory Service Internals).
 
 ### Phase 5: Visual Aids (Mermaid)
 Apply the rules in `./references/mermaid-best-practices.md` to generate syntax-safe diagrams:

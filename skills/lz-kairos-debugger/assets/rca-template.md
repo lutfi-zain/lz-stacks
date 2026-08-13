@@ -5,12 +5,14 @@
 | Field | Value |
 |-------|-------|
 | **Incident ID** | INC-YYYY-XXXX |
+| **Incident Title** | 10-15 Words Summary of Incident |
 | **Date** | YYYY-MM-DD |
 | **Severity** | P1 / P2 / P3 / P4 |
 | **Duration** | [HH:MM] total |
 | **Services Affected** | [list services] |
-| **Incident Commander** | [name] |
-| **RCA Author** | [name] |
+| **Incident Commander** | [User Name] |
+| **RCA Author** | [Coding Agent / Harness Name & Model Name] e.g `oh-my-pi` / `agy cli`|
+| **Session** | [Markdown Link to Chat Session UUID & Session Folder] e.g. [019ff3d8-685e-7000-9030-e86872d64edf](/home/lutfizain/.omp/agent/sessions/--run-media-lutfizain-Work-Siloam-github_all--/2026-08-12T02-41-13-822Z_019ff3d8-685e-7000-9030-e86872d64edf.jsonl) |
 | **Status** | Draft / In Review / Final |
 
 ## Blameless Postmortem Notice
@@ -250,6 +252,6 @@ gantt
 
 ---
 
-**Reviewers:** [names]
+**Reviewers:** [All Involved Parties, Usually User Name]
 **Review Date:** [date]
 **Next Postmortem Review:** [date — typically 2-4 weeks after action items due]

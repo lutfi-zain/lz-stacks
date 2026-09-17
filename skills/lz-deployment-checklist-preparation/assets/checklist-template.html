@@ -1,0 +1,59 @@
+<!-- Standard Jira Rich-Text HTML Template for Deployment Checklist -->
+<h1>Story</h1>
+<div data-type="panel-success"><h2>Overview</h2></div>
+<p>Deployment integrasi dan enhancement fitur pada Kairos Payment &amp; PAS untuk rilis <strong>{{DEPLOYMENT_DATE}}</strong>.</p>
+<h3>Referensi Terkait</h3>
+<ul>
+  <li><p><strong>Parent Story:</strong> <a href="{{PARENT_STORY_URL}}" data-card-appearance="inline">{{PARENT_STORY_URL}}</a></p></li>
+</ul>
+
+<details>
+  <summary>Stories</summary>
+  <table>
+    <thead>
+      <tr><th><p>Story</p></th></tr>
+    </thead>
+    <tbody>
+      {{#STORIES}}
+      <tr>
+        <td><p><a href="{{STORY_URL}}" data-card-appearance="inline">{{STORY_URL}}</a></p></td>
+      </tr>
+      {{/STORIES}}
+    </tbody>
+  </table>
+</details>
+
+<div data-type="panel-info"><h2>PR &amp; Release</h2></div>
+<table>
+  <thead>
+    <tr>
+      <th><p>Story</p></th>
+      <th><p>PR Preprod</p></th>
+      <th><p>PR Prod</p></th>
+      <th><p>Release Draft</p></th>
+      <th><p>Sonar</p></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#STORIES}}
+    <tr>
+      <td><p><a href="{{STORY_URL}}" data-card-appearance="inline">{{STORY_URL}}</a></p></td>
+      <td><p></p></td>
+      <td><p></p></td>
+      <td><p></p></td>
+      <td><p></p></td>
+    </tr>
+    {{/STORIES}}
+  </tbody>
+</table>
+
+<h1>Query: PAY/PAS</h1>
+<h2>Alter SP</h2>
+<pre data-unique-id="sql-sp"><code class="language-sql"></code></pre>
+<h2>Alter</h2>
+<pre data-unique-id="sql-alter"><code class="language-sql"></code></pre>
+<h2>Insert</h2>
+<pre data-unique-id="sql-insert"><code class="language-sql"></code></pre>
+
+<h1>Secret: </h1>
+<pre data-unique-id="json-secret"><code class="language-json"></code></pre>

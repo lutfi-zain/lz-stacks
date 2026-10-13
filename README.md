@@ -24,6 +24,7 @@ npx skills add lutfi-zain/lz-stacks
 Or a single skill:
 
 ```bash
+npx skills add lutfi-zain/lz-stacks --skill lz-change-impact-analysis
 npx skills add lutfi-zain/lz-stacks --skill lz-deployment-checklist-preparation
 npx skills add lutfi-zain/lz-stacks --skill lz-tech-doc-architect
 npx skills add lutfi-zain/lz-stacks --skill lz-linkedin-carousel
@@ -56,6 +57,7 @@ npx skills add lutfi-zain/lz-stacks --skill lz-technical-indicator-architect
 
 | Skill | Description | Command |
 | :--- | :--- | :--- |
+| [**lz-change-impact-analysis**](./skills/lz-change-impact-analysis/README.md) | Proactive blast radius assessment for enterprise microservice changes — traces impact across 8 layers (DB → BE → API → FE → middleware → cache → webhooks → cross-service) with role-specific playbooks and research-backed methodology. | `/skill:lz-change-impact-analysis` |
 | [**lz-deployment-checklist-preparation**](./skills/lz-deployment-checklist-preparation/README.md) | Automated production deployment preparation and checklist scaffolder for Jira — standardizes deployment story titles, generates rich-text checklists with 1-col inline smart cards and PR matrices, and scaffolds per-assignee preparation tickets. | `/skill:lz-deployment-checklist-preparation` |
 | [**lz-tech-doc-architect**](./skills/lz-tech-doc-architect/README.md) | Enterprise-grade Technical Writer skill for generating System Architecture, Component Design (FE/BE), Event-Driven flows, and API Endpoint docs with Mermaid and configurable depth. | `/skill:lz-tech-doc-architect` |
 | [**lz-linkedin-carousel**](./skills/lz-linkedin-carousel/README.md) | High-engagement B2B LinkedIn PDF carousel copywriting and visual design system based on Notion, Stripe, and Elastic aesthetics. | `/skill:lz-linkedin-carousel` |
@@ -90,6 +92,7 @@ npx skills add lutfi-zain/lz-stacks
 ### 2. Specific Skill Installation
 
 ```bash
+npx skills add lutfi-zain/lz-stacks --skill lz-change-impact-analysis
 npx skills add lutfi-zain/lz-stacks --skill lz-deployment-checklist-preparation
 npx skills add lutfi-zain/lz-stacks --skill lz-tech-doc-architect
 npx skills add lutfi-zain/lz-stacks --skill lz-linkedin-carousel

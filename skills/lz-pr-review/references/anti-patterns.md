@@ -1,148 +1,67 @@
-# PR Review Anti-Patterns — What NOT to Do
+# PR Review Anti-Patterns — What NOT to Do (`anti-patterns.md`)
 
-Extracted from real-world PR review failures across Google, Sentry, and open-source projects.
-This file is loaded when the reviewer detects it might be falling into an anti-pattern.
+Extracted from real-world PR review failures across Google, Sentry, and production post-mortems.
+Referenced when the reviewer evaluates its own findings before publishing.
+
+---
 
 ## Anti-Pattern 1: The Rubber Stamp
-
-**What it looks like:**
-> "LGTM! 👍"
-
-**Why it's harmful:**
-- Provides no value to the author
-- Misses opportunity to share knowledge
-- Reduces trust in the review process
-- Often leads to production incidents
-
-**Correction:** Even if the code is genuinely good, mention at least one specific thing
-you verified or appreciated. "LGTM — I verified the error handling in the new auth flow
-covers both 401 and 403 cases correctly."
+- **What it looks like:** *"LGTM! 👍"*
+- **Why it's harmful:** Misses critical production bugs, provides zero value to the author, erodes review accountability.
+- **Correction:** Even if the PR is clean, cite specific things verified: *"LGTM — verified that the new order cancellation handles both 401 unauthenticated and concurrent refund states correctly."*
 
 ---
 
 ## Anti-Pattern 2: The Novel
-
-**What it looks like:**
-- 50+ comments on a single PR
-- Multi-paragraph explanations for each finding
-- Re-architecting the solution in review comments
-
-**Why it's harmful:**
-- Overwhelms the author → they ignore most comments
-- Signals that the design phase was skipped
-- Mixes critical issues with style preferences
-
-**Correction:** If you have >15 findings, escalate the top 3-5 as BLOCKING and create a
-follow-up issue/ticket for the rest. Separate the "must fix now" from "consider for later."
+- **What it looks like:** 50+ comments, multi-paragraph essays on trivial details.
+- **Why it's harmful:** Overwhelms the author with review fatigue; critical blocking issues get drowned in noise.
+- **Correction:** Escalate the top 3-5 high-leverage issues as BLOCKING/IMPORTANT. Group lower-priority suggestions into a follow-up ticket.
 
 ---
 
 ## Anti-Pattern 3: The Gatekeeper
-
-**What it looks like:**
-- Blocking on style preferences
-- Requiring rewrites that don't change behavior
-- "I would have done it differently" → REQUEST_CHANGES
-
-**Why it's harmful:**
-- Creates bottleneck in the review process
-- Demoralizes authors
-- Confuses "better" with "necessary"
-
-**Correction:** If a pattern is functional and follows project conventions, it ships.
-Use NIT for style preferences. Only block on correctness, security, or significant
-performance issues.
+- **What it looks like:** Blocking on personal syntax preferences ("I would have used a reduce instead of for...of").
+- **Why it's harmful:** Demoralizes authors, slows down velocity without adding reliability or safety.
+- **Correction:** If the code works, passes tests, and follows project conventions, approve it. Use `NIT` or `SUGGESTION` for preferences.
 
 ---
 
 ## Anti-Pattern 4: The Time Bomb
-
-**What it looks like:**
-- Approving quickly without reading the diff
-- Reviewing only the file names, not the actual changes
-- "I trust the author" → immediate approve
-
-**Why it's harmful:**
-- This is how production incidents happen
-- The reviewer's name is on the approval → shared accountability
-- "I didn't actually look at it" is not a defense
-
-**Correction:** Always read the diff. For large PRs, at least read the critical path
-changes (auth, payment, data mutation, schema changes).
+- **What it looks like:** Approving quickly without reading the diff ("I trust the author").
+- **Why it's harmful:** This is how production outages happen.
+- **Correction:** Always read the diff. For large PRs, prioritize critical paths (auth, payment, DB migrations).
 
 ---
 
 ## Anti-Pattern 5: The Ghost
-
-**What it looks like:**
-- Taking 3+ days to review without communication
-- Leaving comments without a final verdict (APPROVE/REQUEST_CHANGES)
-- Starting a review, adding 2 comments, then disappearing
-
-**Why it's harmful:**
-- Blocks the author and downstream work
-- Creates uncertainty about PR status
-- Erodes team trust
-
-**Correction:** Set a response time expectation. If you can't review within 24h, say so.
-Always end with a clear verdict. "I'll need more time to review the database changes,
-but the API layer looks good. Partial approval for the controller changes."
+- **What it looks like:** Starting a review, leaving 2 ambiguous comments, then disappearing for days without a verdict.
+- **Why it's harmful:** Blocks the author and creates team uncertainty.
+- **Correction:** Set expectations and always conclude with a definitive verdict (`APPROVE`, `REQUEST_CHANGES`, or `COMMENT`).
 
 ---
 
-## Anti-Pattern 6: The False Positive Factory
-
-**What it looks like:**
-- Flagging imaginary issues
-- "This MIGHT cause a race condition" without evidence
-- Creating findings to justify the review's existence
-
-**Why it's harmful:**
-- Wastes the author's time
-- Creates review fatigue → future real findings get ignored
-- Signals insecurity, not expertise
-
-**Correction:** Every finding must be evidence-based. If you suspect an issue but aren't
-sure, label it as a QUESTION: "Could this be accessed concurrently? If yes, the shared
-state on line 42 needs synchronization."
+## Anti-Pattern 6: The False Positive Factory & Hallucinated Bug
+- **What it looks like:** Making ungrounded claims ("This MIGHT cause a race condition") without citing specific code or verifying framework behavior.
+- **Why it's harmful:** Wastes engineering time and causes reviewers to lose credibility.
+- **Correction:** Enforce the **Quote-Before-Accusing** rule. Every claim must quote exact verbatim lines from the diff and explain the concrete mechanism of failure.
 
 ---
 
 ## Anti-Pattern 7: The Performative Agreement
+- **Source:** `getsentry/skills` code-review (Sentry engineering practices)
+- **What it looks like:** Blindly agreeing with any user objection without evaluating technical trade-offs.
+- **Correction Protocol:**
 
-**Source:** getsentry/skills code-review (Sentry engineering practices)
-
-**What it looks like:**
-- "You're absolutely right!"
-- "Great point, I'll fix that right away!"
-- Immediately implementing every suggestion without evaluation
-
-**Why it's harmful:**
-- Not all review feedback is correct
-- Blind agreement creates bad code just as much as no review
-- Reverses the burden of proof
-
-**Correction from Sentry's pattern:**
+```mermaid
+flowchart LR
+    A["READ"] --> B["UNDERSTAND"] --> C["VERIFY"] --> D["EVALUATE"] --> E["RESPOND"] --> F["IMPLEMENT"]
 ```
-READ → UNDERSTAND → VERIFY → EVALUATE → RESPOND → IMPLEMENT
-```
-Before agreeing, verify: Is the suggestion actually better? Does it apply to this context?
-Use YAGNI check: grep for actual usage before implementing a requested abstraction.
+
+Before agreeing, verify: Is the suggestion actually better? Does it apply to this context? Check actual codebase usage before adopting abstractions.
 
 ---
 
 ## Anti-Pattern 8: The Scope Creep
-
-**What it looks like:**
-- "While you're at it, could you also..."
-- Requesting unrelated improvements in the review
-- Treating the PR as an opportunity to refactor the entire module
-
-**Why it's harmful:**
-- Increases PR scope → harder to review → delays merge
-- Mixes unrelated changes → harder to revert
-- Demoralizes the author ("I thought I was done")
-
-**Correction:** If you spot something worth improving that's outside the PR scope,
-create a separate issue or ticket. Comment: "Not blocking: I noticed [X] could be
-improved — I'll create a follow-up issue."
+- **What it looks like:** *"While you're at it, could you also refactor the entire authentication system?"*
+- **Why it's harmful:** Balloons PR size, delays deployment, and tangles unrelated changes making rollbacks difficult.
+- **Correction:** Keep review focused strictly on the PR requirements. Create a separate Jira/GitHub issue for unrelated cleanups.

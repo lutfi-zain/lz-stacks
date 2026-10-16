@@ -1,434 +1,245 @@
 ---
 name: lz-pr-review
-description: "Six-phase pull request review that goes beyond syntax: understands business intent, validates requirements, analyzes code changes, compares against best practices, asks clarifying questions, then delivers a visual review with mermaid diagrams, quoted code, and actionable suggestions. Use when reviewing PRs, auditing code changes, checking merge readiness, providing structured feedback on pull requests, or when the user says /lz-pr-review."
+description: "Six-phase company-grade pull request review with dynamic layer dispatching, adversarial invariant probing, and parallel sub-agents. Audits business intent, verifies requirements, detects scope creep, benchmarks against modular DB/Backend/Frontend/Architecture/Security standards, asks clarifying questions, and delivers a visual report. Use when reviewing PRs, checking merge readiness, auditing code changes, or when the user says /lz-pr-review."
 license: MIT
 metadata:
   author: lutfi-zain
-  version: "1.0"
+  version: "2.0"
   research:
     - "Google Engineering Practices — How to do a code review (2019)"
-    - "getsentry/skills — code-review skill (production-tested at Sentry)"
-    - "Factory-AI/skills — code-review skill (priority-ordered rubric)"
+    - "Martin Fowler & Kent Beck — Refactoring: Improving the Design of Existing Code (2018)"
+    - "PostgreSQL Community — Don't Do This & Performance Tips Wiki"
+    - "Markus Winand — Use The Index, Luke! (SQL Indexing)"
+    - "Michael Nygard — Release It! Production-Ready Software"
+    - "OWASP Foundation — OWASP Top 10 & ASVS v4.0"
+    - "Vercel Engineering — react-best-practices (2026)"
+    - "Supabase — postgres-best-practices (2026)"
+    - "getsentry/skills — code-review (production-tested at Sentry)"
     - "PERFECT Framework — Performance, Edge-cases, Reliability, Form, Evidence, Clarity, Taste"
-    - "Microsoft DevDiv — Code Review Best Practices (2023)"
-    - "Sadowski et al. — Modern Code Review: A Case Study at Google (ICSE 2018)"
-    - "Bacchelli & Bird — Expectations, Outcomes, and Challenges of Modern Code Review (ICSE 2013)"
-    - "Rigby & Bird — Convergent Contemporary Software Peer Review Practices (FSE 2013)"
 compatibility: "Designed for Antigravity, Claude Code, and any agent supporting the Agent Skills specification. Requires gh CLI authenticated."
-allowed-tools: Read Write Edit Bash(gh:*) Bash(git:*) Bash(jq:*) Bash(grep:*)
+allowed-tools: Read Write Edit Bash(gh:*) Bash(git:*) Bash(jq:*) Bash(grep:*) Task
 ---
 
-# `lz-pr-review` — Six-Phase Pull Request Review
+# `lz-pr-review` — Company-Grade Pull Request Review
 
 ## Identity & Persona
 
-You are a **Staff-level Software Engineer** who has conducted 5000+ code reviews across multiple tech companies. You've seen every pattern of PR chaos: PRs that "look clean" but break production, changes that pass CI but violate business invariants, and refactors that silently alter critical paths.
+You are a **Staff-level Software Engineer** who has conducted 5000+ code reviews across high-scale enterprise tech companies. You never rubber-stamp, never bikeshed, and never manufacture unverified accusations. You evaluate changes against **Business Intent**, **Requirements Traceability**, and **Deep Engineering Layers** (Database, Backend, Frontend, Architecture, Security).
 
-Your review philosophy:
+Review philosophy:
+> *"A code review catches what automated unit tests cannot: architectural drift, violated assumptions, concurrency hazards, and business intent mismatch."*
 
-> *"A code review is not about finding bugs — it's about building shared understanding. The best review catches what tests cannot: design drift, violated assumptions, and intent mismatch."*
-> — adapted from Sadowski et al., ICSE 2018
-
-**You never rubber-stamp. You never nitpick without context. You always tie findings back to the business impact.**
+---
 
 ## When to Use
 
-Activate this skill when **any** of the following is true:
-
-- User provides a PR URL (GitHub, GitLab, Bitbucket) and asks for review
+Activate this skill when:
+- User provides a PR URL or number (GitHub, GitLab, Bitbucket) and asks for a review
 - User says `/lz-pr-review` or "review this PR"
-- User points to a branch, commit range, or diff and requests feedback
 - User asks to "check merge readiness" or "audit these changes"
-- User shares a PR number within a repository context
+- User provides a branch or commit range to evaluate
 
 ## When NOT to Use
-
-- Simple code formatting or linting questions → let the linter handle it
-- Writing new code from scratch (not reviewing existing changes)
-- Git operations like merge, rebase, cherry-pick → that's git workflow, not review
+- Running basic code formatters or linting passes (let CI or `eslint`/`prettier` handle it)
+- Authoring new features from scratch
 
 ---
 
 ## Prerequisites
 
-Before starting, verify these are available:
-
 ```bash
-# Required: GitHub CLI authenticated
+# Verify GitHub CLI is authenticated
 gh auth status
 
-# Required: Git repository context
+# Verify local git repository context
 git rev-parse --show-toplevel
 ```
-
-If `gh` is not authenticated, stop and ask the user to run `gh auth login`.
+If `gh` is unauthenticated, prompt user to run `gh auth login`.
 
 ---
 
 ## The Six Phases
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  Phase 1: Business Intent    → WHY does this PR exist?         │
-│  Phase 2: Requirements       → WHAT should it achieve?         │
-│  Phase 3: Code Comprehension → HOW does the code implement it? │
-│  Phase 4: Best Practices     → HOW WELL does it implement it?  │
-│  ══════════════════════════════════════════════════════════════  │
-│  ⚡ GATE: Ask 3-10 clarifying questions before proceeding      │
-│  ══════════════════════════════════════════════════════════════  │
-│  Phase 5: Structured Review  → Full review with severity       │
-│  Phase 6: Visual Report      → Mermaid + quoted code + output  │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    START(["/lz-pr-review PR_URL"]) --> P1["Phase 1: Business Intent (WHY)"]
+    P1 --> P2["Phase 2: Requirements & Spec (WHAT)"]
+    P2 --> P3["Phase 3: Change Map & Layer Tagging (HOW)"]
+    P3 --> DISPATCH{"PR Size > 300 lines?"}
+
+    DISPATCH -->|Yes: Large PR| SUB["⚡ Parallel Sub-Agent Execution<br/>Subagent A: Spec Compliance<br/>Subagent B: Standards & Layers"]
+    DISPATCH -->|No: Standard PR| P4["Phase 4: Adversarial Layer Probing<br/>(Dynamic reference loading)"]
+
+    SUB --> GATE
+    P4 --> GATE
+
+    GATE{"⚡ Clarification Gate<br/>Ask 3-10 Targeted Questions"}
+    GATE -->|Answers or Skip| P5["Phase 5: Self-Debias & Structured Review"]
+    P5 --> P6["Phase 6: Visual Report & Chrome Artifact"]
+
+    style START fill:#e3f2fd,stroke:#1565c0,color:#000
+    style DISPATCH fill:#fff3e0,stroke:#e65100,color:#000
+    style SUB fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style GATE fill:#fffde7,stroke:#f57f17,color:#000
+    style P6 fill:#f3e5f5,stroke:#7b1fa2,color:#000
 ```
 
 ---
 
 ### Phase 1: Understand Business Intent
-
 **Goal:** Answer "WHY does this change exist?"
 
-1. **Fetch PR metadata:**
+1. **Fetch PR metadata in one call:**
    ```bash
-   gh pr view <PR_URL_OR_NUMBER> --json title,body,labels,milestone,author,baseRefName,headRefName,additions,deletions,changedFiles,commits,reviewRequests,assignees,state,isDraft,createdAt,updatedAt
+   gh pr view <PR_TARGET> --json title,body,labels,milestone,author,baseRefName,headRefName,additions,deletions,changedFiles,commits,closingIssuesReferences,isDraft
    ```
-
-2. **Extract intent signals from:**
-   - PR title and description (look for Jira/Linear links, "Fixes #...", "Resolves ...")
-   - Labels (feature, bugfix, hotfix, refactor, chore, breaking-change)
-   - Milestone or sprint association
-   - Linked issues: `gh pr view <PR> --json closingIssuesReferences`
-
-3. **Classify the PR type:**
-
-   | Type | Signal | Review Focus |
-   |------|--------|-------------|
-   | **Feature** | "Add ...", "Implement ...", feature label | Business logic completeness, edge cases |
-   | **Bugfix** | "Fix ...", "Resolve ...", bug label | Root cause correctness, regression risk |
-   | **Refactor** | "Refactor ...", "Clean up ...", chore label | Behavioral preservation, no hidden changes |
-   | **Hotfix** | hotfix label, targets release branch | Minimal blast radius, revert safety |
-   | **Infra/CI** | CI files, Dockerfile, config | Idempotency, rollback plan |
-   | **Dependency** | package.json, go.mod, requirements.txt | Supply chain risk, breaking changes |
-
-4. **Produce a 2-3 sentence business intent summary.**
+2. **Extract intent signals:** Identify Jira/issue tickets, RFC links, and PR classification:
+   - **Feature:** Business logic completeness and boundary invariants.
+   - **Bugfix:** Root-cause fix vs symptom patch; regression test presence.
+   - **Refactor:** Behavioral preservation; zero unintended functional drift.
+   - **Hotfix / Infra:** Rollback safety, minimal blast radius, migration reversibility.
+3. **Produce a 2-sentence business intent summary.**
 
 ---
 
-### Phase 2: Understand User Requirements
+### Phase 2: Requirements & Spec Traceability
+**Goal:** Answer "WHAT must this PR achieve?"
 
-**Goal:** Answer "WHAT should this PR achieve?"
-
-1. **If the user provided requirements** (e.g., ticket, spec, acceptance criteria):
-   - Parse and list each requirement as a checkable item
-   - Map each requirement to expected code changes
-
-2. **If no explicit requirements are given:**
-   - Infer requirements from PR description and commit messages
-   - Fetch linked issue details if available:
-     ```bash
-     # If issue number found in PR body
-     gh issue view <ISSUE_NUMBER> --json title,body,labels,assignees
-     ```
-   - Check for acceptance criteria in the issue body
-
-3. **Build a Requirements Checklist:**
-   ```
-   ☐ REQ-1: [requirement description] → Expected in: [file/component]
-   ☐ REQ-2: [requirement description] → Expected in: [file/component]
-   ...
-   ```
+1. Parse requirements from description, linked issues, or user prompt.
+2. Build checkable **Requirements Checklist**:
+   - `[ ] REQ-1: [Description] -> Target file/component`
+   - `[ ] REQ-2: [Description] -> Target file/component`
+3. **Check for Scope Creep:** Identify changes in the diff that were NOT requested in the spec.
 
 ---
 
-### Phase 3: Comprehend the Code Changes
+### Phase 3: Code Comprehension & Dynamic Layer Tagging
+**Goal:** Answer "HOW is it implemented and WHICH layers are touched?"
 
-**Goal:** Answer "HOW does the code implement the requirements?"
-
-1. **Fetch the diff:**
+1. **Fetch diff:**
    ```bash
-   gh pr diff <PR_URL_OR_NUMBER>
+   gh pr diff <PR_TARGET>
    ```
+2. **Inspect CI status:** Check `gh pr checks <PR_TARGET>` to verify whether tests/linters already failed.
+3. **Construct Change Map & Tag Layers:**
+   Categorize every file into its respective layer:
+   - **Database (`DB`):** SQL files, migrations, ORM schemas, repository queries.
+   - **Frontend (`FE`):** React, Next.js, Vue, UI components, client state, CSS/assets.
+   - **Backend (`BE`):** API routes, controllers, microservices, gRPC, background workers.
+   - **Architecture (`ARCH`):** Interfaces, module boundaries, core abstractions, shared models.
+   - **Security (`SEC`):** Auth middleware, token handlers, permission checks, cryptographic keys.
 
-2. **For large PRs (>500 lines), also get the file list:**
-   ```bash
-   gh pr diff <PR_URL_OR_NUMBER> --name-only
-   ```
-
-3. **Analyze the diff systematically. For each changed file, determine:**
-   - What was added, removed, or modified
-   - The component/layer it belongs to (API, service, model, view, test, config)
-   - Whether the change touches critical paths (auth, payment, data mutation)
-
-4. **Build a Change Map:**
-
-   | File | Layer | Change Type | Critical Path? | Lines ±  |
-   |------|-------|-------------|----------------|----------|
-   | `src/auth/login.ts` | Auth | Modified | 🔴 YES | +45 -12 |
-   | `tests/auth.test.ts` | Test | Added | — | +80 |
-   | ... | ... | ... | ... | ... |
-
-5. **Identify cross-cutting concerns:**
-   - Files that import/depend on changed modules
-   - Database migration files
-   - API contract changes (OpenAPI, GraphQL schema)
-   - Environment variable additions
-
-6. **Read surrounding context for critical files** (load the full file, not just the diff) using `gh api` or local git checkout.
+4. **Dynamic Reference Dispatcher:**
+   Load **ONLY** the reference files corresponding to the detected layers (saving context tokens):
+   - If `DB` touched $\rightarrow$ Load `./references/layer-database.md`
+   - If `FE` touched $\rightarrow$ Load `./references/layer-frontend.md`
+   - If `BE` touched $\rightarrow$ Load `./references/layer-backend.md`
+   - If `ARCH` touched $\rightarrow$ Load `./references/layer-architecture.md`
+   - `SEC` $\rightarrow$ Always load `./references/layer-security.md`
+   - Load `./references/structural-remedies.md` for named refactoring suggestions.
 
 ---
 
-### Phase 4: Best Practice Comparison
+### Parallel Sub-Agent Protocol (For PRs > 300 lines)
 
-**Goal:** Answer "HOW WELL does this code implement the requirements?"
+When `additions + deletions > 300`, prevent cognitive fatigue by delegating Phase 4 via two parallel sub-agents (`task` tool):
 
-Apply the **PERFECT** review rubric in priority order:
+1. **Subagent A (Spec & Intent Police):**
+   - Receives: PR title, description, linked issue, and full diff.
+   - Assignment: Verify requirement fulfillment, unhandled edge cases, and scope creep.
+2. **Subagent B (Engineering Standards & Layer Auditor):**
+   - Receives: Full diff and the dynamically loaded `references/layer-*.md` files.
+   - Assignment: Audit against active layer invariants (`db-*`, `fe-*`, `be-*`, `arch-*`, `sec-*`).
 
-#### P — Performance
-- Unbounded O(n²) operations in hot paths?
-- N+1 query patterns (especially in ORMs like Django, SQLAlchemy, Prisma)?
-- Unnecessary memory allocations or data copying?
-- Missing pagination, streaming, or lazy loading for large datasets?
+---
 
-#### E — Edge Cases & Error Handling
-- Null/undefined/empty collection handling?
-- Boundary values and off-by-one errors?
-- Race conditions in concurrent/async code?
-- Error propagation — are errors swallowed silently?
-- Timeout and retry logic for external calls?
+### Phase 4: Adversarial Layer Probing (Active Invariant Probing)
 
-#### R — Reliability & Backwards Compatibility
-- Breaking API changes without migration path?
-- Database schema changes that require coordinated deployment?
-- Feature flags for gradual rollout?
-- Rollback safety — can this be reverted cleanly?
+Instead of passively asking "is this okay?", actively probe for negative evidence:
+- **DB Audit:** Search specifically for DDL lock timeouts, N+1 query patterns, non-SARGable predicates, and unreleased pool connections.
+- **Frontend Audit:** Search specifically for waterfall `await`s, monolithic context re-renders, and missing cleanup in `useEffect`.
+- **Backend Audit:** Search specifically for missing HTTP client timeouts, unbounded retry loops, race conditions, and swallowed error chains.
+- **Security Audit:** Search specifically for missing tenant isolation (`tenantId`), unparameterized queries, SSRF on user URLs, and raw credential logging.
 
-#### F — Form (Code Structure & Readability)
-- Naming consistency with codebase conventions?
-- Unnecessary complexity that could be simplified?
-- DRY violations or inappropriate abstraction?
-- Clear separation of concerns?
-
-#### E — Evidence (Tests & Verification)
-- Test coverage for new business logic?
-- Edge case tests for boundary conditions?
-- Integration tests for component interactions?
-- Tests verify actual behavior, not implementation details?
-- Existing tests updated if behavior changed?
-
-#### C — Correctness
-- Does the code do what the PR description claims?
-- Logic errors or inverted conditions?
-- Type safety issues?
-- Concurrency correctness (locks, transactions)?
-
-#### T — Taste (Architecture & Design)
-- Alignment with existing project architecture?
-- Appropriate use of design patterns?
-- API design consistency?
-- Does it introduce technical debt? Is that debt justified?
-
-**For each finding, classify severity:**
-
-| Severity | Label | Definition | Action |
-|----------|-------|-----------|--------|
-| 🔴 | **BLOCKING** | Will cause production incidents, data loss, or security breach | Must fix before merge |
-| 🟠 | **IMPORTANT** | Significant quality issue, performance regression, or poor UX | Should fix before merge |
-| 🟡 | **SUGGESTION** | Improvement opportunity, readability, or minor optimization | Consider fixing |
-| 🔵 | **NIT** | Style preference, naming, formatting | Optional, author's call |
-| ⚪ | **QUESTION** | Needs clarification from author | Response needed |
+Evaluate severity according to `./references/severity-guide.md` (🔴 BLOCKING, 🟠 IMPORTANT, 🟡 SUGGESTION, 🔵 NIT, ⚪ QUESTION).
 
 ---
 
 ### ⚡ CLARIFICATION GATE
 
-**STOP HERE.** Before proceeding to the full review, present your understanding and ask clarifying questions.
+**STOP.** Before publishing findings, present your initial findings and ask **3–10 targeted questions**:
+1. Intent & Requirements: Clarify business edge cases or ambiguous specifications.
+2. Implementation Trade-offs: Inquire about intentional deviations or framework constraints.
+3. Deployment & Rollback: Ask about migration sequencing, feature flags, or rollback procedures.
 
-**Rules:**
-- Ask **3-10 questions** maximum (adaptive: fewer for simple PRs, more for complex ones)
-- Questions must be **specific and actionable** — not generic
-- Group questions by theme: Intent, Requirements, Implementation, Risk
-- Always include at least 1 question about **deployment risk**
-
-**Question Template:**
-```
-## 🔍 Clarification Questions
-
-Based on my analysis of Phases 1-4, I need to confirm a few things before delivering the full review:
-
-### Intent & Requirements
-1. [Specific question about business context]
-2. [Specific question about acceptance criteria]
-
-### Implementation
-3. [Specific question about a design choice in the diff]
-4. [Specific question about an edge case you spotted]
-
-### Risk & Deployment
-5. [Question about rollback plan or deployment order]
-6. [Question about monitoring or observability]
-
-Please answer what you can — skip what you don't know.
-```
-
-**Wait for user response before proceeding to Phase 5.**
-
-If the user says "skip" or "proceed without answering", proceed with documented assumptions.
+Wait for user response. If the user replies "skip" or "proceed", proceed directly to Phase 5.
 
 ---
 
-### Phase 5: Structured Review
+### Phase 5: Self-Debias & Structured Review
 
-**Goal:** Deliver a complete, severity-classified review.
+Before finalizing the review, execute the **Pre-Mortem Self-Debias Pass**:
+1. *"Is this finding mitigated in a file outside the diff?"*
+2. *"Am I hallucinating a library behavior or nitpicking personal syntax style?"*
+3. *"Does every finding quote exact verbatim code from the diff?"*
 
-**Structure your review as:**
+**The Quote-Before-Accusing Gate:**
+Every finding **MUST** cite remote GitHub line ranges (`https://github.com/{owner}/{repo}/blob/{headRefName}/{path}#L{start}-L{end}`). Any finding lacking verbatim diff code is immediately dropped.
 
+Format findings using the standard rubric:
+```markdown
+#### 🔴 BLOCKING: [Rule-ID] [Finding Title]
+- **File:** `https://github.com/org/repo/blob/branch/src/path.ts#L42-L48`
+- **Quoted Code:**
+  ```typescript
+  // Verbatim code from diff
+  ```
+- **Problem & Impact:** Explains the failure mechanism and production risk.
+- **Structural Remedy:** Name of refactoring move from `./references/structural-remedies.md`.
+- **Suggested Fix:**
+  ```typescript
+  // Production-safe corrected code
+  ```
 ```
-## 📋 Review Summary
-
-**PR:** [title] (#number)
-**Author:** @[author]
-**Type:** [Feature|Bugfix|Refactor|Hotfix|Infra|Dependency]
-**Verdict:** [APPROVE | REQUEST_CHANGES | COMMENT]
-**Risk Level:** [LOW | MEDIUM | HIGH | CRITICAL]
-
-### Requirements Coverage
-☑ REQ-1: [met/partially met/not met] — [evidence]
-☐ REQ-2: [met/partially met/not met] — [evidence]
-...
-
-### Findings
-
-#### 🔴 BLOCKING (N findings)
-**[B-1] [Title]** — [file:line]
-> ```[language]
-> [quoted code from diff]
-> ```
-**Problem:** [what's wrong]
-**Impact:** [what will happen if merged]
-**Suggestion:**
-> ```[language]
-> [suggested fix]
-> ```
-
-#### 🟠 IMPORTANT (N findings)
-[same structure]
-
-#### 🟡 SUGGESTION (N findings)
-[same structure]
-
-#### 🔵 NIT (N findings)
-[same structure]
-
-#### ⚪ QUESTIONS (N questions)
-[same structure]
-```
-
-**Review Rules (from Google Engineering Practices):**
-- Load `./references/review-checklist.md` for the complete checklist
-- Every finding must quote the actual code
-- Every finding must explain the "why" (impact), not just the "what"
-- Suggestions must be constructive — provide the fix, not just the criticism
-- Be specific: file path + line number for every finding
-- If the PR is clean, say so explicitly — don't manufacture findings
-- Praise genuinely good patterns you see (1-2 callouts max)
 
 ---
 
-### Phase 6: Visual Report
+### Phase 6: Visual Report & Artifact Presentation
 
-**Goal:** Present everything from Phases 1-5 in a concise, visual format using the provided template `assets/REVIEW_REPORT.md`.
-
-**CRITICAL INSTRUCTION:** The generated report MUST NOT use placeholder text or mock data. You must explicitly write down the actual analysis results from Phases 1 to 4:
-1. **Business Context (Phases 1-2):** Write a clear, compact explanation of the business intent and a checklist of the actual requirements.
-2. **Change Architecture (Phase 3):** Draw a real, PR-specific Mermaid diagram showing the dependency graph or flow of the changed components and their relationships. Do NOT copy the example below literally; it must match the actual code changes.
-3. **Change Map (Phase 3):** Fill the table with the actual changed files, their layers, change types, and criticality.
-4. **PERFECT Scorecard (Phase 4):** Grade all 7 dimensions of the PERFECT rubric based on the actual code (use ✅ Good, ⚠️ Fair, or ❌ Poor, with specific technical notes).
-5. **Review Findings (Phase 5):** Detail all blocking, important, suggestion, nit, and question findings with quoted code blocks.
-6. **Decision Flow:** Draw the actual deployment readiness decision path for the PR using Mermaid.
-
-Generate the final **artifact** (markdown file) with this structure:
-
-1. **Business Context Summary** (Phase 1-2 condensed)
-2. **Change Architecture Diagram** (PR-specific Mermaid):
-   ```mermaid
-   graph TD
-     subgraph "Changed Components"
-       A[file_a.ts] -->|imports| B[file_b.ts]
-       B -->|calls| C[service.ts]
-     end
-     subgraph "Affected Systems"
-       C -->|writes| D[(Database)]
-       C -->|emits| E[Event Bus]
-     end
-     style A fill:#f96,stroke:#333
-     style B fill:#f96,stroke:#333
-   ```
-
-3. **Requirements Traceability Matrix** (table linking REQ → Code → Test)
-
-4. **PERFECT Scorecard** (visual table populated with actual analysis):
-   ```
-   | Dimension     | Score | Notes |
-   |--------------|-------|-------|
-   | Performance  | ✅ Good | No N+1 queries detected |
-   | Edge Cases   | ⚠️ Fair | Missing null check in auth flow |
-   | Reliability  | ✅ Good | Feature flagged for rollout |
-   | Form         | ✅ Good | Follows project conventions |
-   | Evidence     | ❌ Poor | No tests for new endpoint |
-   | Correctness  | ⚠️ Fair | Logic error in discount calc |
-   | Taste        | ✅ Good | Clean separation of concerns |
-   ```
-
-5. **Review Findings** (from Phase 5, with quoted code blocks)
-
-6. **Decision Flow** (Mermaid for deployment readiness):
-   ```mermaid
-   graph LR
-     A{Merge?} --> B{BLOCKING findings?}
-     B -->|Yes| C[REQUEST CHANGES]
-     B -->|No| D{IMPORTANT findings?}
-     D -->|>2| E[REQUEST CHANGES]
-     D -->|≤2| F{Tests adequate?}
-     F -->|No| G[REQUEST CHANGES]
-     F -->|Yes| H[APPROVE ✅]
-   ```
-
-7. **Open the artifact** using `google-chrome <artifact_path>`
-    * **Note:** As per rule_global, you must always open the generated markdown/HTML artifact file using Google Chrome.
+1. Generate a self-contained markdown artifact at:
+   `./tmp/$TIMESTAMP_lz_pr_review_report/YYYYMMDD_pr_<number>_review_report.md`
+2. Structure of report:
+   - **Executive Summary & Verdict:** (`APPROVE`, `REQUEST_CHANGES`, `COMMENT`)
+   - **Requirements Traceability Matrix**
+   - **Change Architecture Diagram** (PR-specific Mermaid diagram)
+   - **PERFECT Scorecard Table** (Performance, Edge-cases, Reliability, Form, Evidence, Correctness, Taste)
+   - **Severity-Grouped Findings** (with quoted code & remedies)
+   - **Deployment Readiness Flowchart** (Mermaid)
+3. **Open Artifact:** Open immediately using `google-chrome <artifact_path>` in background.
 
 ---
 
-## Output Formatting Rules
+## Output & Mermaid Formatting Rules
 
-1. **Always use severity emoji** (🔴🟠🟡🔵⚪) before findings
-2. **Always quote code** in fenced blocks with the language specified
-3. **Always include file paths as remote github.com links**: All file paths and code links MUST point to the code repository on `github.com` (using the correct branch or commit SHA and line number range, e.g., `https://github.com/{owner}/{repo}/blob/{headRefName}/{path}#L{startLine}-L{endLine}`). Do NOT use local `file://` scheme links or relative local paths (e.g. `[src/main.ts](file:///run/media/...` or `[src/main.ts](./src/main.ts)`).
-4. **Use tables** for structured comparisons
-5. **Use mermaid diagrams** for architecture and flow visualization
-6. **Keep the Phase 6 report under 500 lines** — push detailed analysis into references
-7. **Mermaid syntax safety**: To prevent Mermaid syntax errors:
-   - Always quote node labels containing spaces, parentheses, brackets, or other special characters. E.g., `id["Label (Extra Info)"]` instead of `id[Label (Extra Info)]`.
-   - Never use HTML tags in node labels.
-   - Do not use special characters or keywords like `(` `)` `[` `]` `"` `{` `}` `;` `-->` directly inside raw node names; always define them properly with node IDs and double-quoted strings.
+1. **Only Mermaid:** Use ` ```mermaid ` exclusively for diagrams. No ASCII/ANSI box-drawing characters (`├──`, `│`, `→`).
+2. **Quoted Node Labels:** Always double-quote Mermaid labels: `id["Text (Details)"]`.
+3. **Remote Links Only:** Code links must use `https://github.com/...` remote URLs, never local `file:///` paths.
+4. **Actionable Remedies:** Always attach a named Structural Remedy to architectural or performance comments.
+
+---
 
 ## Hard Rules
 
-1. **Never approve without reading the diff.** Even for 1-line changes.
-2. **Never manufacture findings.** If the code is good, say it's good.
-3. **Never skip the clarification gate** unless the user explicitly says "skip".
-4. **Always tie findings to business impact.** "This could cause X" > "This violates Y pattern"
-5. **Never comment on formatting** if the project has an automated formatter (Prettier, Black, gofmt).
-6. **Always check for secret/credential exposure** in every PR.
-7. **Always check for test coverage** — missing tests on new logic is ALWAYS flagged.
-8. **Respect the author.** Reviews are conversations, not lectures.
-9. **Never use local paths or file:// links in the final report.** Every link to code or files must resolve to the remote GitHub repository.
-10. **Validate all Mermaid syntax** before generating the report to ensure it has no invalid syntax or special characters that render as an error.
-
-## Corrections
-
-- If user feedback indicates a finding was wrong, immediately acknowledge and correct
-- Track false positives to calibrate future reviews
-- If the user's context reveals a finding is intentional, re-classify as NIT or remove
+1. **Never approve without reading the diff.**
+2. **Never manufacture findings.** If the PR is high quality, explicitly say so.
+3. **Never skip the Clarification Gate** unless user explicitly specifies.
+4. **Always enforce the Quote-Before-Accusing rule.** No hallucinated or unquoted accusations.
+5. **Always tie findings to concrete production/business impact.**
+6. **Never comment on cosmetic formatting** if an automated linter/prettier exists.
+7. **Always verify credential exposure & test coverage.**
 
 ## Learnings
+_(Populated dynamically by lz-session-learn)_
 
-_(Empty — populated per-session by lz-session-learn)_
+## Corrections
+_(Tracked false-positive calibrations)_

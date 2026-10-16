@@ -1,148 +1,118 @@
 # lz-pr-review
 
-[![Agent Skill](https://img.shields.io/badge/agent_skill-v1.0-blue?style=flat-square)](https://agentskills.io/specification)
+[![Agent Skill](https://img.shields.io/badge/agent_skill-v2.0-blue?style=flat-square)](https://agentskills.io/specification)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](../../LICENSE)
 [![Research-Backed](https://img.shields.io/badge/research-backed-purple?style=flat-square)](#the-research)
 
-> Six-phase pull request review that goes beyond syntax: understands business intent, validates requirements, analyzes code changes, compares against best practices, asks clarifying questions, then delivers a visual review with mermaid diagrams, quoted code, and actionable suggestions.
+> Company-grade six-phase pull request review with dynamic layer dispatching, adversarial invariant probing, and parallel sub-agents. Audits business intent, verifies requirements, detects scope creep, benchmarks against modular DB/Backend/Frontend/Architecture/Security standards, asks clarifying questions, and delivers a visual report.
+
+---
 
 ## Why Another PR Review Skill?
 
-Most PR review skills do one thing: read the diff and dump a list of findings. That's table stakes. Real reviews require **understanding WHY the change exists** before evaluating HOW it was implemented.
+Most PR review tools do one thing: read the diff and dump a list of superficial syntax complaints. Real Staff-level code reviews require:
+1. **Understanding WHY the change exists** before evaluating HOW it was implemented.
+2. **Preventing LLM Amnesia & Hallucination** through active adversarial invariant probing and the **Quote-Before-Accusing** evidence gate.
+3. **Deep Stack-Specific Expertise** without token waste, loading specialized references (Database, Backend, Frontend, Architecture, Security) dynamically based on the layers touched.
+4. **Context Isolation for Large PRs (>300 lines)** by delegating Spec Compliance and Engineering Standards to parallel sub-agents.
 
-`lz-pr-review` enforces a structured workflow that mirrors how a Staff-level engineer reviews code:
-
-1. First understand the **business context**
-2. Then validate against **requirements**
-3. Then comprehend the **actual code changes**
-4. Then compare against **best practices**
-5. **Ask clarifying questions** (the step most automated tools skip)
-6. Only then deliver the **review** — with visuals, quotes, and next steps
+---
 
 ## How it Works
 
 ```mermaid
-graph TD
-    START(["/lz-pr-review PR_URL"]) --> P1
+flowchart TD
+    START(["/lz-pr-review PR_URL"]) --> P1["Phase 1: Business Intent (WHY)"]
+    P1 --> P2["Phase 2: Requirements & Spec (WHAT)"]
+    P2 --> P3["Phase 3: Change Map & Layer Tagging (HOW)"]
+    P3 --> DISPATCH{"PR Size > 300 lines?"}
 
-    subgraph "Phase 1-4: Understanding"
-        P1["📋 Phase 1: Business Intent"] --> P2
-        P2["📝 Phase 2: Requirements"] --> P3
-        P3["🔍 Phase 3: Code Comprehension"] --> P4
-        P4["⚖️ Phase 4: Best Practice Comparison"]
-    end
+    DISPATCH -->|Yes: Large PR| SUB["⚡ Parallel Sub-Agent Execution<br/>Subagent A: Spec Compliance<br/>Subagent B: Standards & Layers"]
+    DISPATCH -->|No: Standard PR| P4["Phase 4: Adversarial Layer Probing<br/>(Dynamic reference loading)"]
 
+    SUB --> GATE
     P4 --> GATE
 
-    GATE{"⚡ Clarification Gate<br/>Ask 3-10 Questions"}
+    GATE{"⚡ Clarification Gate<br/>Ask 3-10 Targeted Questions"}
+    GATE -->|Answers or Skip| P5["Phase 5: Self-Debias & Structured Review"]
+    P5 --> P6["Phase 6: Visual Report & Chrome Artifact"]
 
-    GATE -->|"User answers"| P5
-    GATE -->|"User says skip"| P5
-
-    subgraph "Phase 5-6: Review & Report"
-        P5["📊 Phase 5: Structured Review<br/>(PERFECT rubric + severity)"] --> P6
-        P6["🎨 Phase 6: Visual Report<br/>(Mermaid + code quotes)"]
-    end
-
-    P6 --> OUTPUT(["📄 Review Artifact<br/>opened in Chrome"])
-
-    style GATE fill:#f96,stroke:#333,color:#000
-    style P6 fill:#6f6,stroke:#333,color:#000
+    style START fill:#e3f2fd,stroke:#1565c0,color:#000
+    style DISPATCH fill:#fff3e0,stroke:#e65100,color:#000
+    style SUB fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style GATE fill:#fffde7,stroke:#f57f17,color:#000
+    style P6 fill:#f3e5f5,stroke:#7b1fa2,color:#000
 ```
 
-## Installation
-
-```bash
-npx skills add lutfi-zain/lz-stacks --skill lz-pr-review -g
-```
-
-## Usage
-
-```
-# Review a PR by URL
-/lz-pr-review https://github.com/org/repo/pull/123
-
-# Review a PR by number (within a repo)
-/lz-pr-review #123
-
-# Review with explicit requirements
-/lz-pr-review #123
-Requirements:
-1. Must handle empty cart case
-2. Discount should cap at 50%
-3. API response should include pagination metadata
-```
+---
 
 ## What's Included
 
 ```
 lz-pr-review/
-├── SKILL.md                            # Main workflow (6 phases)
-├── README.md                           # This file
+├── SKILL.md                            # Orchestrator (6 phases + dispatcher + subagents)
+├── README.md                           # Documentation, research citations, and guides
 ├── references/
-│   ├── review-checklist.md             # Security, Performance, Reliability, Tests
-│   ├── anti-patterns.md                # 8 review anti-patterns to avoid
-│   └── severity-guide.md              # Severity classification decision tree
+│   ├── layer-database.md               # DB concurrency, lock timeouts, indexes, SARGable (db-*)
+│   ├── layer-frontend.md               # UI waterfalls, context split, memoization, leaks (fe-*)
+│   ├── layer-backend.md                # Outbound timeouts, retries, race conditions, outbox (be-*)
+│   ├── layer-architecture.md           # Fowler code smells, leaky abstractions, boundaries (arch-*)
+│   ├── layer-security.md               # OWASP ASVS, IDOR, SSRF, PII masking, secrets (sec-*)
+│   ├── structural-remedies.md          # Named refactoring moves (Addy Osmani catalog)
+│   ├── severity-guide.md               # Severity decision flowchart (Mermaid) & definitions
+│   ├── anti-patterns.md                # 8 reviewer anti-patterns to avoid
+│   └── review-checklist.md             # Master layer directory & universal sanity checks
 ├── scripts/
-│   ├── pr-fetch.sh                     # Fetch all PR data in one pass
-│   └── pr-submit-review.sh            # Submit review verdict to GitHub
+│   ├── pr-fetch.sh                     # Single-pass PR metadata + diff fetcher
+│   └── pr-submit-review.sh             # GitHub review submitter
 └── assets/
     ├── REVIEW_REPORT.md                # Report template with mermaid diagrams
-    └── CLARIFICATION_QUESTIONS.md     # Question bank by category + PR size
+    └── CLARIFICATION_QUESTIONS.md      # Question bank by category + PR size
 ```
 
-## The PERFECT Rubric
+---
 
-Every review evaluates code against 7 dimensions, in priority order:
+## Modular Layer Rules
 
-| Dimension | Focus | Source |
-|-----------|-------|--------|
-| **P**erformance | N+1 queries, unbounded ops, memory | Sentry engineering practices |
-| **E**dge Cases | Null handling, boundaries, race conditions | Google Engineering Practices |
-| **R**eliability | Backwards compat, rollback safety, feature flags | Factory-AI review rubric |
-| **F**orm | Naming, complexity, DRY, separation of concerns | PERFECT framework |
-| **E**vidence | Test coverage, edge case tests, behavior verification | Bacchelli & Bird (ICSE 2013) |
-| **C**orrectness | Logic errors, type safety, concurrency | Sadowski et al. (ICSE 2018) |
-| **T**aste | Architecture fit, design patterns, tech debt | Rigby & Bird (FSE 2013) |
+| Layer | Prefix | Canonical Sources | Focus Areas |
+|---|---|---|---|
+| **Database** | `db-` | PostgreSQL Wiki, Markus Winand, Supabase | DDL lock timeouts, batching deletions, non-SARGable predicates, missing FK indexes, Expand-Contract zero-downtime |
+| **Frontend** | `fe-` | React.dev, Vercel Core, Web Vitals | Eliminating async waterfalls, context re-render splits, inline prop memoization, event listener cleanup, barrel imports |
+| **Backend** | `be-` | Michael Nygard (*Release It!*), Sentry | Outbound client timeouts, exponential backoff with jitter, atomic updates vs races, goroutine leaks, Transactional Outbox |
+| **Architecture** | `arch-` | Martin Fowler (*Refactoring*), SOLID | Primitive Obsession, Shotgun Surgery, Feature Envy, Leaky Abstractions, God Components |
+| **Security** | `sec-` | OWASP Top 10, OWASP ASVS v4.0 | IDOR tenant isolation, SQLi, SSRF, secret exposure, unmasked PII logging, missing authentication gates |
+
+---
 
 ## Severity Classification
 
 | Emoji | Level | Definition | Action |
 |-------|-------|-----------|--------|
-| 🔴 | BLOCKING | Production incident, data loss, security breach | Must fix before merge |
-| 🟠 | IMPORTANT | Quality regression, missing tests, poor UX | Should fix before merge |
-| 🟡 | SUGGESTION | Better approach exists, readability improvement | Author's call |
-| 🔵 | NIT | Style preference, formatting, naming | Optional |
-| ⚪ | QUESTION | Needs clarification to evaluate | Response needed |
+| 🔴 | **BLOCKING** | Production incident, data corruption/loss, security breach, lock escalation | Must fix before merge |
+| 🟠 | **IMPORTANT** | Quality regression, N+1 queries, missing tests, uncleaned subscriptions | Should fix before merge |
+| 🟡 | **SUGGESTION** | Better architectural approach, readability improvement, minor optimization | Author's call |
+| 🔵 | **NIT** | Style preference, formatting, naming | Optional |
+| ⚪ | **QUESTION** | Needs clarification from author to evaluate | Response needed |
+
+---
 
 ## The Research
 
-| Source | Year | Contribution to this skill |
-|--------|------|--------------------------|
-| [Modern Code Review: A Case Study at Google](https://dl.acm.org/doi/10.1145/3183519.3183525) | 2018 | Evidence that reviews find design issues more often than bugs; shaped Phase 1-2 focus on intent |
-| [Expectations, Outcomes, and Challenges of Modern Code Review](https://dl.acm.org/doi/10.5555/2486788.2486882) | 2013 | Findings that reviewers struggle with understanding change context; inspired the Clarification Gate |
-| [Convergent Contemporary Software Peer Review Practices](https://dl.acm.org/doi/10.1145/2491411.2491444) | 2013 | Cross-company analysis showing effective reviews are lightweight and fast; shaped severity escalation rules |
-| [Google Engineering Practices: How to do a code review](https://google.github.io/eng-practices/review/) | 2019 | CL review standards; influenced the "approve even with nits" philosophy |
-| [getsentry/skills — code-review](https://github.com/getsentry/skills) | 2025 | Verification gates, anti-performative-agreement rules, subagent pattern |
-| [Factory-AI/skills — code-review](https://github.com/Factory-AI/skills) | 2025 | Priority-ordered review rubric, multi-source target detection |
-| [bkircher/skills — gh-code-review](https://github.com/bkircher/skills) | 2025 | CLI-first workflow, non-interactive defaults, temp file hygiene |
-| [PERFECT Framework](https://tims.io) | 2025 | Structured mnemonic for review dimensions |
-| [xpepper/pr-review-agent-skill](https://github.com/xpepper/pr-review-agent-skill) | 2025 | Resumable/idempotent review loops, max-cycle guardrails |
+| Source | Year | Canonical Contribution |
+|--------|------|------------------------|
+| [Google Engineering Practices](https://google.github.io/eng-practices/) | 2019 | Standard of code review; rigor on what to look for and when to approve |
+| [Martin Fowler & Kent Beck — Refactoring](https://refactoring.com/catalog/) | 2018 | The 12 Code Smells baseline (Primitive Obsession, Shotgun Surgery, Feature Envy) |
+| [PostgreSQL Community — Don't Do This](https://wiki.postgresql.org/wiki/Don't_Do_This) | 2024 | Critical database anti-patterns, lock escalation, and schema evolution risks |
+| [Markus Winand — Use The Index, Luke!](https://use-the-index-luke.com/) | 2012 | SARGable query predicates, composite index order, and B-Tree execution mechanics |
+| [React Core — You Might Not Need an Effect](https://react.dev/learn/you-might-not-need-an-effect) | 2023 | State reactivity, render-time computation, and lifecycle cleanup guarantees |
+| [Vercel — react-best-practices](https://github.com/vercel-labs/agent-skills) | 2026 | 70-rule prioritized performance rubric with positive and negative code diffs |
+| [Michael Nygard — Release It!](https://pragprog.com/titles/mnee2/release-it-second-edition/) | 2018 | Fail-fast patterns, circuit breakers, explicit client timeouts, and bulkhead isolation |
+| [OWASP Foundation — ASVS v4.0](https://owasp.org/www-project-application-security-verification-standard/) | 2021 | Strict verification standards for IDOR, SSRF, injection, and PII protection |
+| [Matt Pocock — code-review](https://github.com/mattpocock/skills) | 2026 | Dual-axis review (Spec vs Standards) running in parallel sub-agents |
+| [Addy Osmani — code-review-and-quality](https://github.com/addyosmani/agent-skills) | 2026 | Structural Remedies catalog and mutation testing verification mindset |
+| [Sadowski et al. — Modern Code Review at Google](https://dl.acm.org/doi/10.1145/3183519.3183525) | 2018 | Empirical evidence that reviews find architectural drift and intent mismatch over shallow syntax |
 
-## What Makes This Different from Other PR Review Skills
-
-| Feature | getsentry | Factory-AI | bkircher | lz-pr-review |
-|---------|-----------|------------|----------|-------------|
-| Business intent analysis | ❌ | ❌ | ❌ | ✅ Phase 1 |
-| Requirements validation | ❌ | ❌ | ❌ | ✅ Phase 2 |
-| Clarification gate (Q&A) | ❌ | ❌ | ❌ | ✅ 3-10 adaptive questions |
-| Visual report (Mermaid) | ❌ | ❌ | ❌ | ✅ Phase 6 |
-| PERFECT rubric | ❌ | Partial | ❌ | ✅ Full 7 dimensions |
-| Severity classification | Partial | ❌ | ❌ | ✅ 5 levels with decision tree |
-| Helper scripts | ❌ | ❌ | ❌ | ✅ pr-fetch.sh, pr-submit-review.sh |
-| Reference docs | ❌ | ❌ | ❌ | ✅ checklist, anti-patterns, severity guide |
-| Report template | ❌ | ❌ | ❌ | ✅ REVIEW_REPORT.md |
-| Research citations | ❌ | ❌ | ❌ | ✅ 9 primary sources |
+---
 
 ## License
 

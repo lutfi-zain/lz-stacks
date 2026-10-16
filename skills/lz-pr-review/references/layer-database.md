@@ -137,6 +137,45 @@
   ```
 - **Remedy:** Use ORM `include` / `JOIN` / DataLoader batching.
 
+#### `db-index-composite-order`
+- **Impact:** HIGH
+- **Why:** Composite indexes `(col_a, col_b)` only accelerate queries filtering by `col_a` first. Putting range columns before equality columns prevents index scans on subsequent columns.
+- **Incorrect:**
+  ```sql
+  -- Index: (created_at, tenant_id)
+  -- ❌ Range on created_at blocks index traversal for equality on tenant_id!
+  SELECT * FROM invoices WHERE tenant_id = 't-123' AND created_at >= '2026-01-01';
+  ```
+- **Correct:**
+  ```sql
+  -- Index: (tenant_id, created_at)
+  -- ✅ Rule: Equality columns FIRST, range/sort columns LAST
+  CREATE INDEX idx_invoices_tenant_created ON invoices (tenant_id, created_at DESC);
+  SELECT * FROM invoices WHERE tenant_id = 't-123' AND created_at >= '2026-01-01';
+  ```
+- **Remedy:** Reorder composite index columns: `equality` columns first, `range/order` columns last.
+
+#### `db-query-unbounded-oom`
+- **Impact:** CRITICAL
+- **Why:** Selecting unbounded collections into application memory without `LIMIT` or streaming causes Out-Of-Memory (OOM) crashes as tables grow in production.
+- **Incorrect:**
+  ```typescript
+  // ❌ In production with 2M rows, this consumes 4 GB RAM and crashes pod!
+  const allTransactions = await db.transactions.findMany();
+  return allTransactions.filter(t => t.status === 'FAILED');
+  ```
+- **Correct:**
+  ```typescript
+  // ✅ Keyset pagination, explicit LIMIT, or database-side filter
+  const failedTransactions = await db.transactions.findMany({
+    where: { status: 'FAILED' },
+    take: 100,
+    orderBy: { id: 'desc' }
+  });
+  // Or stream via database cursor for batch processing
+  ```
+- **Remedy:** Enforce mandatory `LIMIT` / cursor streaming on all collection queries.
+
 ---
 
 ### 3. Schema Evolution & Migration Safety (HIGH)
@@ -175,3 +214,39 @@
   }
   ```
 - **Remedy:** Enforce `try...finally` connection release or scope wrappers.
+
+#### `db-conn-idle-in-transaction`
+- **Impact:** CRITICAL
+- **Why:** Leaving an open transaction uncommitted or unrolled-back (e.g. error in application code without rollback) holds a dormant `idle in transaction` connection, blocking VACUUM, holding row locks, and causing connection pool starvation.
+- **Incorrect:**
+  ```typescript
+  const client = await pool.connect();
+  await client.query('BEGIN');
+  const res = await client.query('SELECT * FROM accounts WHERE id = $1 FOR UPDATE', [id]);
+  if (res.rows[0].balance < 0) {
+    // ❌ Forgotten ROLLBACK! Leaves connection in 'idle in transaction' holding lock!
+    client.release();
+    return { error: 'Negative balance' };
+  }
+  await client.query('COMMIT');
+  client.release();
+  ```
+- **Correct:**
+  ```typescript
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const res = await client.query('SELECT * FROM accounts WHERE id = $1 FOR UPDATE', [id]);
+    if (res.rows[0].balance < 0) {
+      await client.query('ROLLBACK'); // ✅ Explicit rollback
+      return { error: 'Negative balance' };
+    }
+    await client.query('COMMIT');
+  } catch (err) {
+    await client.query('ROLLBACK'); // ✅ Guarantees rollback on error
+    throw err;
+  } finally {
+    client.release(); // ✅ Always released back to pool
+  }
+  ```
+- **Remedy:** Wrap raw transactions in `try...catch...finally` ensuring `ROLLBACK` on all early exit or error branches.

@@ -92,6 +92,45 @@
   ```
 - **Remedy:** Pass `context.Context` to all asynchronous worker routines.
 
+#### `be-loop-complexity-hotpath`
+- **Impact:** HIGH
+- **Why:** Nested loops ($O(n^2)$) searching across large arrays block the CPU and event loop, causing server timeouts.
+- **Incorrect:**
+  ```typescript
+  // ❌ O(N * M) nested scan: for 10k items, executes 100M operations!
+  const matched = users.map(user => ({
+    ...user,
+    department: departments.find(d => d.id === user.departmentId)
+  }));
+  ```
+- **Correct:**
+  ```typescript
+  // ✅ O(N + M) using Hash Map for O(1) lookups
+  const deptMap = new Map(departments.map(d => [d.id, d]));
+  const matched = users.map(user => ({
+    ...user,
+    department: deptMap.get(user.departmentId)
+  }));
+  ```
+- **Remedy:** Index lookup collections into a `Map` or `Set` before iterating.
+
+#### `be-memory-oom-buffer`
+- **Impact:** CRITICAL
+- **Why:** Buffering large file uploads, report exports, or huge JSON responses entirely into RAM causes Out-Of-Memory (OOM) heap crashes.
+- **Incorrect:**
+  ```typescript
+  // ❌ Reads entire 2 GB file into heap memory
+  const fileBuffer = await fs.promises.readFile(largeFilePath);
+  await s3Client.putObject({ Bucket: 'b', Key: 'k', Body: fileBuffer });
+  ```
+- **Correct:**
+  ```typescript
+  // ✅ Stream chunks directly with backpressure
+  const fileStream = fs.createReadStream(largeFilePath);
+  await s3Upload({ Bucket: 'b', Key: 'k', Body: fileStream });
+  ```
+- **Remedy:** Use Node.js / Go streams or chunked readers for large I/O payloads.
+
 ---
 
 ### 3. Error Handling & Data Integrity (HIGH)
@@ -114,6 +153,54 @@
   }
   ```
 - **Remedy:** Wrap exceptions with the inner causal exception preserved.
+
+#### `be-error-masked-secondary`
+- **Impact:** CRITICAL
+- **Why:** Catch blocks that attempt recovery or logging by accessing unvalidated properties can throw a secondary error (e.g. `NullReferenceException`), masking the true primary root cause and making production debugging impossible.
+- **Incorrect:**
+  ```csharp
+  try {
+      await ProcessOrderAsync(order);
+  } catch (Exception ex) {
+      // ❌ If ex.Data or order.Customer is null, throws NullReferenceException!
+      // Secondary error completely masks the original SQL/network exception!
+      _logger.LogError("Failed: " + ex.InnerException.Message);
+      throw;
+  }
+  ```
+- **Correct:**
+  ```csharp
+  try {
+      await ProcessOrderAsync(order);
+  } catch (Exception ex) {
+      // ✅ Null-safe logging preserves the primary exception intact
+      _logger.LogError(ex, "Failed to process order {OrderId}", order?.Id);
+      throw;
+  }
+  ```
+- **Remedy:** Ensure catch blocks are fail-safe and preserve primary exception objects without throwing secondary NullReferenceExceptions.
+
+#### `be-error-swallowed-silent`
+- **Impact:** HIGH
+- **Why:** Empty `catch` blocks silently swallow failures, causing data corruption or mysterious downstream bugs with zero audit trail.
+- **Incorrect:**
+  ```typescript
+  try {
+    await syncUserStatus(user);
+  } catch (e) {
+    // ❌ Silent failure: nobody knows sync failed!
+  }
+  ```
+- **Correct:**
+  ```typescript
+  try {
+    await syncUserStatus(user);
+  } catch (err) {
+    logger.warn({ err, userId: user.id }, 'Non-fatal status sync failed; queued for retry');
+    await deadLetterQueue.push({ userId: user.id, err: err.message });
+  }
+  ```
+- **Remedy:** Log every handled exception with context; never leave catch blocks empty.
 
 #### `be-dual-write-outbox`
 - **Impact:** HIGH

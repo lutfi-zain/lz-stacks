@@ -43,6 +43,7 @@ npx skills add lutfi-zain/lz-stacks --skill lz-create-youtube-abstracts
 npx skills add lutfi-zain/lz-stacks --skill lz-kairos-debugger
 npx skills add lutfi-zain/lz-stacks --skill lz-pr-review
 npx skills add lutfi-zain/lz-stacks --skill lz-technical-indicator-architect
+npx skills add lutfi-zain/lz-stacks --skill lz-itts-lms
 ```
 
 ---
@@ -76,6 +77,7 @@ npx skills add lutfi-zain/lz-stacks --skill lz-technical-indicator-architect
 | [**lz-daily-reflect**](./skills/lz-daily-reflect/SKILL.md) | Smart daily work reflections with project context. | `/skill:lz-daily-reflect` |
 | [**lz-create-agentsmd**](./skills/lz-create-agentsmd/README.md) | Interactive AGENTS.md generator for pi. | `/skill:lz-create-agentsmd` |
 | [**lz-create-youtube-abstracts**](./skills/lz-create-youtube-abstracts/SKILL.md) | Create academic abstract/summary from YouTube video transcripts in Bahasa Indonesia. Includes auto-fetch, overlap merge, and humanization. | `/skill:lz-create-youtube-abstracts` |
+| [**lz-itts-lms**](./skills/lz-itts-lms/README.md) | Zero-overhead automation, course tracking, assignment deadline alerts, CBT exam query, and attendance monitoring for ITTS Civitas LMS. | `/skill:lz-itts-lms` |
 
 ---
 
